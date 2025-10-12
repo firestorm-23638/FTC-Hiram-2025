@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.util.Config;
 
 // can only move counter clockwise
 // https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-19-2-1-ratio-24mm-length-8mm-rex-shaft-312-rpm-3-3-5v-encoder
@@ -49,6 +54,19 @@ public class Indexer extends SubsystemBase {
         }
     }
 
+    public CommandBase rotate120Cmd(boolean clockwise){
+        return new InstantCommand(()->this.rotate120(clockwise));
+    }
+
+    public  CommandBase rotate60Cmd(boolean clockwise) {
+        return new InstantCommand(()->this.rotate60(clockwise));
+    }
+
+    public CommandBase nearTarget() {
+        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - 10 && motor.getCurrentTick() < motor.getTargetTick() + 10);
+    }
+
+
     // Returns the index of the closest available spindexer slot
     public int findNextAvailableSlot() throws RuntimeException {
         for (int i = 0; i < slots.length; i++) {
@@ -71,13 +89,46 @@ public class Indexer extends SubsystemBase {
         int slot = findNextAvailableSlot();
         moveToSlot(slot);
     }
+
+    public char getStateLetter(SlotState slotState){
+        if(slotState.equals(SlotState.GREEN)){
+            return 'G';
+        }
+        if(slotState.equals(SlotState.PURPLE)){
+            return 'P';
+        }
+        return 'E';
+
+    }
+
+    public int getBestStartingLocation(){
+        char[] balls = {getStateLetter(slots[0].getState()),
+                getStateLetter(slots[1].getState()),
+                getStateLetter(slots[2].getState()),
+                getStateLetter(slots[0].getState()),
+                getStateLetter(slots[1].getState()),
+                getStateLetter(slots[2].getState()),
+        };
+
+        char[] motif = Config.getMotif();
+        for(int i = 0; i<balls.length; i++){
+            if(i == 4)
+                return 0;
+
+            if(balls[i] == motif[0]&&balls[i+1] == motif[1]&&balls[i+2] == motif[2])
+                return i;
+        }
+        return 0;
+    }
+
+
     // Ejects all three balls from the spindexer
     public void ejectAll() {
         int bestStartingLocation = getBestStartingLocation();
         moveToSlot(bestStartingLocation);
         for (int i = 0; i < 3; i++) {
-            eject();
-            rotate(true);
+            //eject();
+            //rotate(true);
         }
     }
 
@@ -96,8 +147,8 @@ public class Indexer extends SubsystemBase {
     }
 
     public static class SpindexerMotor {
-        private static int currentTick;
-        private static int targetTick;
+        private int currentTick;
+        private int targetTick;
         private final DcMotor motor;
         final static float encoderResolution = 537.7f;
         final static float encoderResolution120 = encoderResolution / 3;
@@ -169,6 +220,13 @@ public class Indexer extends SubsystemBase {
          */
         public int getRevolutions() {
             return (int) (motor.getCurrentPosition() / encoderResolution);
+        }
+
+        public int getCurrentTick(){
+            return this.currentTick;
+        }
+        public int getTargetTick(){
+            return  this.targetTick;
         }
     }
 }

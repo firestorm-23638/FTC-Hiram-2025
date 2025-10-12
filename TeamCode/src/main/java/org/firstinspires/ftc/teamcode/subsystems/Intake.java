@@ -23,11 +23,11 @@ public class Intake extends SubsystemBase {
     }
 
     public CommandBase intakeBall(){
-        return new RunCommand(()->intakeRoller.setPower(1));
+        return new InstantCommand(()->intakeRoller.setPower(1));
     }
 
     public CommandBase ejectBall(){
-        return new RunCommand(()->intakeRoller.setPower(-1));
+        return new InstantCommand(()->intakeRoller.setPower(-1));
     }
 
     public boolean isBeamBroken(){
