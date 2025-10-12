@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-// TODO: This
-public class Intake {
-
+public enum Patterns {
+    GPP,
+    PGP,
+    PPG,
 }
