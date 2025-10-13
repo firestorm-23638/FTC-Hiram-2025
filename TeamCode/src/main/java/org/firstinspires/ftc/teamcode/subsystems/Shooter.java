@@ -9,18 +9,27 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Shooter extends SubsystemBase{
 
     private static double MAX_SPEED = 3900;
     private DcMotorEx shooter;
     private double targetSpeed;
-    public Shooter(HardwareMap hardwareMap){
+    private Telemetry telemetry;
+    public Shooter(HardwareMap hardwareMap, Telemetry telemetry){
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
+        this.telemetry = telemetry;
+    }
+
+    @Override
+    public void periodic() {
+        telemetry.addData("rpm", getSpeed());
     }
 
     // ramp up to certain rpm
     public void rampUp(double targetSpeed){
-        shooter.setPower(targetSpeed/MAX_SPEED);
+        shooter.setPower(-1);
     }
     public Command shootBall(double targetSpeed){
         return new InstantCommand(()->rampUp(targetSpeed));

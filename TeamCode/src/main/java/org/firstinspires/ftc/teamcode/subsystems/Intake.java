@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -16,6 +17,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(HardwareMap hMap){
         intakeRoller = hMap.get(DcMotor.class, "intakeRoller");
+        intakeRoller.setDirection(DcMotorSimple.Direction.REVERSE);
         beamBreak = hMap.get(DigitalChannel.class, "beamBreak");
     }
     public CommandBase stop(){

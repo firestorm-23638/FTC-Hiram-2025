@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.test;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,8 +18,12 @@ public class ShooterTest extends CommandOpMode{
     @Override
     public void initialize() {
         this.driver = new GamepadEx(gamepad1);
-        this.shooter = new Shooter(hardwareMap);
+        this.shooter = new Shooter(hardwareMap, telemetry);
         this.driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(shooter.shootBall(390))
                 .whenReleased(shooter.stopShoot());
+
+        register(shooter);
+
+        schedule(new RunCommand(telemetry ::update));
     }
 }
