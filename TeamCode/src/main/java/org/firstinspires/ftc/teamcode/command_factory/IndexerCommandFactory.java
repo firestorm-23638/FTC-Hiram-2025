@@ -13,8 +13,8 @@ public class IndexerCommandFactory {
         return new SequentialCommandGroup(
                 intake.intakeBall(),
                 intake.waitUntilArtifactInjested(),
-                new WaitCommand(500),
-                indexer.rotate60Cmd(true),
+//                new WaitCommand(50),
+                indexer.rotate120Cmd(true),
                 indexer.nearTarget()
                 // add indexer when madox finished.
         );

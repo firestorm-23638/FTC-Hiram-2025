@@ -5,9 +5,15 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Config;
+
+/*
+    TODO: Fix issue where spamming bumpers makes current tick offset
+ */
 
 // can only move counter clockwise
 // https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-19-2-1-ratio-24mm-length-8mm-rex-shaft-312-rpm-3-3-5v-encoder
@@ -16,15 +22,19 @@ public class Indexer extends SubsystemBase {
     private int intakeIndex = 0;
     private static int sixtyDegreeRevolutions = 0;
     private final IntakeIndex[] slots = {new IntakeIndex(), new IntakeIndex(), new IntakeIndex()};
-
-    public Indexer(HardwareMap hw) {
+    private Telemetry telemetry;
+    public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
+        this.telemetry = telemetry;
     }
+
     // rotates the spindexer motor once and updates the intake index
 
     @Override
     public void periodic() {
         motor.rotate();
+        telemetry.addData("CurrentTick", motor.currentTick);
+        telemetry.addData("target", motor.targetTick);
     }
 
     public void rotate120(boolean clockwise) {
@@ -63,7 +73,7 @@ public class Indexer extends SubsystemBase {
     }
 
     public CommandBase nearTarget() {
-        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - 10 && motor.getCurrentTick() < motor.getTargetTick() + 10);
+        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - 50 && motor.getCurrentTick() < motor.getTargetTick() + 50);
     }
 
 
@@ -149,11 +159,11 @@ public class Indexer extends SubsystemBase {
     public static class SpindexerMotor {
         private int currentTick;
         private int targetTick;
-        private final DcMotor motor;
-        final static float encoderResolution = 537.7f;
+        private final DcMotorEx motor;
+        final static float encoderResolution = 4096f;
         final static float encoderResolution120 = encoderResolution / 3;
         final static float encoderResolution60 = encoderResolution120 / 2;
-        final static float kP = 1 / (encoderResolution);
+        final static float kP = (float) 1 / 2000;
 
         /*
         float err = encoderResolution120 - motor.getCurrentPosition();
@@ -165,7 +175,7 @@ public class Indexer extends SubsystemBase {
 
         */
         public SpindexerMotor(HardwareMap hw) {
-            motor = hw.get(DcMotor.class, "spindexerMotor");
+            motor = hw.get(DcMotorEx.class, "spindexerMotor");
         }
 
         // Returns true if the motor is busy
@@ -175,7 +185,7 @@ public class Indexer extends SubsystemBase {
 
         // Rotates toward the target position
         public void rotate() {
-            currentTick = motor.getCurrentPosition();
+            currentTick = -motor.getCurrentPosition();
             float err = targetTick - currentTick;
             float power = kP * err;
 
@@ -190,12 +200,10 @@ public class Indexer extends SubsystemBase {
             if (motor.isBusy()) {
                 throw new RuntimeException("Motor is busy");
             }
-            int rev = (int) (currentTick / encoderResolution);
-            float rotStart = encoderResolution * rev;
             if (clockwise) {
-                targetTick = (int) (rotStart + encoderResolution120);
+                targetTick = (int) (targetTick + encoderResolution120);
             } else {
-                targetTick = (int) (rotStart - encoderResolution120);
+                targetTick = (int) (targetTick - encoderResolution120);
             }
         }
         /**
@@ -207,11 +215,11 @@ public class Indexer extends SubsystemBase {
                 return;
             }
             int rev = (int) (currentTick / encoderResolution);
-            float rotStart = encoderResolution * rev;
+            float rotStart = currentTick + (encoderResolution * rev);
             if (clockwise) {
-                targetTick = (int) (rotStart + encoderResolution60);
+                targetTick = (int) (targetTick + encoderResolution60);
             } else {
-                targetTick = (int) (rotStart - encoderResolution60);
+                targetTick = (int) (targetTick - encoderResolution60);
             }
         }
         /**
@@ -219,7 +227,7 @@ public class Indexer extends SubsystemBase {
          * @return int (the number of revolutions the motor has made)
          */
         public int getRevolutions() {
-            return (int) (motor.getCurrentPosition() / encoderResolution);
+            return (int) (-motor.getCurrentPosition() / encoderResolution);
         }
 
         public int getCurrentTick(){

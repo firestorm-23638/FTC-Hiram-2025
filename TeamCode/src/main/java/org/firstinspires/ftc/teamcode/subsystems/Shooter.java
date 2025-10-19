@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -13,9 +15,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Shooter extends SubsystemBase{
 
-    private static double MAX_SPEED = 3900;
+    private static double MAX_SPEED = 4200;
     private DcMotorEx shooter;
-    private double targetSpeed;
+    private double targetSpeed = 10000;
     private Telemetry telemetry;
     public Shooter(HardwareMap hardwareMap, Telemetry telemetry){
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
@@ -25,20 +27,25 @@ public class Shooter extends SubsystemBase{
     @Override
     public void periodic() {
         telemetry.addData("rpm", getSpeed());
+        telemetry.addData("atSpeed", checkSpeed(3600));
     }
 
     // ramp up to certain rpm
     public void rampUp(double targetSpeed){
-        shooter.setPower(-1);
+        double speedError = targetSpeed-getSpeed();
+
+
+        double power = (targetSpeed/MAX_SPEED) + (speedError*0.0005);
+        shooter.setPower(power);
     }
     public Command shootBall(double targetSpeed){
-        return new InstantCommand(()->rampUp(targetSpeed));
+        return new RunCommand(()->rampUp(targetSpeed),this);
     }
-    public Command waitUntilFast(){
-        return new WaitUntilCommand(this::checkSpeed);
+    public Command waitUntilFast(double targetSpeed){
+        return new WaitUntilCommand(()->checkSpeed(targetSpeed));
     }
     public Command stopShoot(){
-        return new InstantCommand(()->shooter.setPower(0));
+        return new InstantCommand(()->shooter.setPower(0), this);
     }
     // return the current speed
     public double getSpeed(){
@@ -46,8 +53,8 @@ public class Shooter extends SubsystemBase{
     }
 
     // check that the current speed is close to the target speed
-    public boolean checkSpeed(){
-         return (getSpeed() > targetSpeed-50 && getSpeed() < targetSpeed+50);
+    public boolean checkSpeed(double targetSpeed){
+         return (getSpeed() > targetSpeed-50);
 
     }
 

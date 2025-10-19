@@ -27,7 +27,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateTeleOpDrive(double x, double y, double rx) {
-        follower.setTeleOpDrive(y,x,rx, false);
+        follower.setTeleOpDrive(y,x,rx, true);
     }
     public void startTeleOpDrive(){
         follower.startTeleopDrive();
