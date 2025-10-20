@@ -17,32 +17,34 @@ public class Intake extends SubsystemBase {
     private DcMotor intakeRoller;
     private DigitalChannel beamBreak;
     private Telemetry telemetry;
-    public Intake(HardwareMap hMap, Telemetry telemetry){
+
+    public Intake(HardwareMap hMap, Telemetry telemetry) {
         intakeRoller = hMap.get(DcMotor.class, "intakeRoller");
         intakeRoller.setDirection(DcMotorSimple.Direction.REVERSE);
         beamBreak = hMap.digitalChannel.get("beamBreak");
         this.telemetry = telemetry;
     }
-    public CommandBase stop(){
-        return new InstantCommand(()->intakeRoller.setPower(0), this);
+
+    public CommandBase stop() {
+        return new InstantCommand(() -> intakeRoller.setPower(0), this);
     }
 
-    public CommandBase intakeBall(){
-        return new InstantCommand(()->intakeRoller.setPower(1), this);
+    public CommandBase intakeBall() {
+        return new InstantCommand(() -> intakeRoller.setPower(1), this);
     }
 
-    public CommandBase ejectBall(){
-        return new InstantCommand(()->intakeRoller.setPower(-1), this);
+    public CommandBase ejectBall() {
+        return new InstantCommand(() -> intakeRoller.setPower(-1), this);
     }
 
-    public boolean isBeamBroken(){
+    public boolean isBeamBroken() {
         return beamBreak.getState();
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        telemetry.addData("isBeamBroken",isBeamBroken());
+        telemetry.addData("isBeamBroken", isBeamBroken());
     }
 
     public CommandBase waitUntilArtifactInjested() {

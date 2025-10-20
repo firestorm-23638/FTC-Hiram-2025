@@ -13,13 +13,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class Shooter extends SubsystemBase{
+public class Shooter extends SubsystemBase {
 
     private static double MAX_SPEED = 4200;
     private DcMotorEx shooter;
-    private double targetSpeed = 10000;
+    private double targetSpeed = 0;
     private Telemetry telemetry;
-    public Shooter(HardwareMap hardwareMap, Telemetry telemetry){
+
+    public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         this.telemetry = telemetry;
     }
@@ -27,34 +28,40 @@ public class Shooter extends SubsystemBase{
     @Override
     public void periodic() {
         telemetry.addData("rpm", getSpeed());
-        telemetry.addData("atSpeed", checkSpeed(3600));
+        telemetry.addData("atSpeed", checkSpeed(targetSpeed));
+
+        double speedError = targetSpeed - getSpeed();
+
+
+        double power = (targetSpeed / MAX_SPEED) + (speedError * 0.0005);
+        shooter.setPower(power);
     }
 
     // ramp up to certain rpm
-    public void rampUp(double targetSpeed){
-        double speedError = targetSpeed-getSpeed();
+    public void rampUp(double targetSpeed) {
+        this.targetSpeed = targetSpeed;
+    }
 
+    public Command shootBall(double targetSpeed) {
+        return new RunCommand(() -> rampUp(targetSpeed), this);
+    }
 
-        double power = (targetSpeed/MAX_SPEED) + (speedError*0.0005);
-        shooter.setPower(power);
+    public Command waitUntilFast(double targetSpeed) {
+        return new WaitUntilCommand(() -> checkSpeed(targetSpeed));
     }
-    public Command shootBall(double targetSpeed){
-        return new RunCommand(()->rampUp(targetSpeed),this);
+
+    public Command stopShoot() {
+        return new InstantCommand(() -> shooter.setPower(0), this);
     }
-    public Command waitUntilFast(double targetSpeed){
-        return new WaitUntilCommand(()->checkSpeed(targetSpeed));
-    }
-    public Command stopShoot(){
-        return new InstantCommand(()->shooter.setPower(0), this);
-    }
+
     // return the current speed
-    public double getSpeed(){
-       return shooter.getVelocity()/28*60;
+    public double getSpeed() {
+        return shooter.getVelocity() / 28 * 60;
     }
 
     // check that the current speed is close to the target speed
-    public boolean checkSpeed(double targetSpeed){
-         return (getSpeed() > targetSpeed-50);
+    public boolean checkSpeed(double targetSpeed) {
+        return (getSpeed() > targetSpeed - 50);
 
     }
 

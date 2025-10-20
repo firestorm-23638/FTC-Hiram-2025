@@ -16,10 +16,25 @@ public class Kicker extends SubsystemBase {
     public Kicker(HardwareMap hMap, Telemetry telemetry){
         this.kicker = hMap.get(Servo.class, "kicker");
     }
+
+    private Command setPos(int millis, double pos) {
+        return new RunCommand(() -> kicker.setPosition(pos), this).withTimeout(millis);
+    }
+
+    public Command pushBall(int millis) {
+        return setPos(millis, 0.15);
+    }
+
+    public Command retract(int millis) {
+        return setPos(millis, 0.01);
+    }
+
     public Command pushBall(){
-        return new RunCommand(() ->kicker.setPosition(0.15), this).withTimeout(1000);
+        return pushBall(1000);
     }
     public Command retract(){
-        return new RunCommand(() ->kicker.setPosition(0.01), this).withTimeout(250);
+        return retract(250);
     }
+
+
 }
