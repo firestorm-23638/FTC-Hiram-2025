@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-public class Launcher {
-    private double yaw;
-
+public enum Patterns {
+    GPP,
+    PGP,
+    PPG,
 }
