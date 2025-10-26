@@ -10,12 +10,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Shooter extends SubsystemBase {
 
     private final DcMotorEx flywheelMotor;
     private final Telemetry telemetry;
 
+    public static final double LOAD_CURRENT = 3;
     private static final double MAX_SPEED = 4200;
     private double targetRPM = 0;
     private double currentRPM = 0;
@@ -48,6 +50,10 @@ public class Shooter extends SubsystemBase {
             flywheelMotor.setPower(MAX_SPEED);
         } else {
             double power = calculateShooterPower(targetRPM, this.currentRPM);
+            double current = flywheelMotor.getCurrent(CurrentUnit.AMPS);
+            if (current > LOAD_CURRENT) {
+                power = Math.min(MAX_SPEED, power * 1.1);
+            }
             flywheelMotor.setPower(power);
         }
 
