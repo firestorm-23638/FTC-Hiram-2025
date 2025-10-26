@@ -50,8 +50,8 @@ public class Shooter extends SubsystemBase {
         currentRPM = getSpeed();
         double flywheelAccel = (currentRPM - lastRPM) / Math.max(1e3, dt);
 
-        if (targetRPM - currentRPM >= 500) {
-            setPower(MAX_SPEED);
+        if (false) {
+            //setPower(MAX_SPEED);
         } else {
             double power = calculateShooterPower();
             double current = leftFlywheelMotor.getCurrent(CurrentUnit.AMPS);
