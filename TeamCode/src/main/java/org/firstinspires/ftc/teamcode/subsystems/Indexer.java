@@ -28,6 +28,28 @@ public class Indexer extends SubsystemBase {
         this.telemetry = telemetry;
     }
 
+    public void rotateToNearestIndex() {
+        float closest = Float.POSITIVE_INFINITY;
+        int closestIndex = 0;
+
+        float ticksAtZero = motor.getRevolutions() * SpindexerMotor.encoderResolution;
+        float ticksAtOne = ticksAtZero + SpindexerMotor.encoderResolution120;
+        float ticksAtTwo = ticksAtOne + SpindexerMotor.encoderResolution120;
+
+        float closestTick = ticksAtZero;
+        if (Math.abs((motor.getCurrentTick() - ticksAtOne)) < closest) {
+            closestIndex = 1;
+            closestTick = ticksAtOne;
+        }
+        if (Math.abs((motor.getCurrentTick() - ticksAtTwo)) < closest) {
+            closestTick = ticksAtTwo;
+            closestIndex = 2;
+        }
+
+        intakeIndex = closestIndex;
+        motor.rotateToTick((int) closestTick);
+    }
+
     // rotates the spindexer motor once and updates the intake index
 
     @Override
@@ -49,18 +71,16 @@ public class Indexer extends SubsystemBase {
     public void rotate60(boolean clockwise) {
         motor.rotate60(clockwise);
         if (clockwise) {
-            intakeIndex = Util.modPlusOne(intakeIndex);
             sixtyDegreeRevolutions++;
         } else {
-            intakeIndex = Util.modMinusOne(intakeIndex);
             sixtyDegreeRevolutions--;
         }
         if (sixtyDegreeRevolutions == 2) {
             sixtyDegreeRevolutions = 0;
-            intakeIndex++;
+            intakeIndex = Util.modPlusOne(intakeIndex);
         } else if (sixtyDegreeRevolutions == -2) {
             sixtyDegreeRevolutions = 0;
-            intakeIndex--;
+            intakeIndex = Util.modMinusOne(intakeIndex);
         }
     }
 
@@ -199,10 +219,11 @@ public class Indexer extends SubsystemBase {
         private int currentTick;
         private int targetTick;
         private final DcMotorEx motor;
-        final static float encoderResolution = 4096f;
-        final static float encoderResolution120 = encoderResolution / 3;
-        final static float encoderResolution60 = encoderResolution120 / 2;
-        final static float kP = (float) 1 / 2000;
+        public final static float encoderResolution = 4096f;
+        public final static float encoderResolution120 = encoderResolution / 3;
+        public final static float encoderResolution60 = encoderResolution120 / 2;
+        public final static float encoderResolution240 = encoderResolution120 * 2;
+        public final static float kP = (float) 1 / 2000;
 
         /*
         float err = encoderResolution120 - motor.getCurrentPosition();
@@ -261,6 +282,11 @@ public class Indexer extends SubsystemBase {
                 targetTick = (int) (targetTick - encoderResolution60);
             }
         }
+
+        public void rotateToTick(int tick) {
+            targetTick = tick;
+        }
+
         /**
          *
          * @return int (the number of revolutions the motor has made)
