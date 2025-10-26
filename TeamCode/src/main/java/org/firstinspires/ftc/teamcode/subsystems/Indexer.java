@@ -89,6 +89,10 @@ public class Indexer extends SubsystemBase {
         return new InstantCommand(() -> setSlots(colors));
     }
 
+    public CommandBase goToSlotCmd(int slot) {
+        return new InstantCommand(() -> moveToSlot(slot));
+    }
+
 
     // Returns the index of the closest available spindexer slot
     public int findNextAvailableSlot() throws RuntimeException {
