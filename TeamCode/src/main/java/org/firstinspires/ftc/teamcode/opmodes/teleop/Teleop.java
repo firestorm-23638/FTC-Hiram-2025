@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -44,10 +45,19 @@ public class Teleop extends CommandOpMode {
                 driver::getLeftX,
                 driver::getLeftY,
                 driver::getRightX));
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(new RepeatThriceCommand(IndexerCommandFactory.intakeArtifact(intake, indexer))).whenReleased(intake.stop());
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(new RepeatThriceCommand(IndexerCommandFactory.intakeArtifact(intake, indexer)))
+                .whenReleased(intake.stop());
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
-                .whenReleased(shooter.stopShoot());
+                .whenReleased(
+                        new ParallelCommandGroup(
+                        shooter.stopShoot(),
+                        kicker.retract(),
+                        indexer.rotateToNearestIndexCmd()
+                        ));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());
+        driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(indexer.reset());
 
         register(shooter, intake, kicker);
         schedule(new RunCommand(telemetry :: update));

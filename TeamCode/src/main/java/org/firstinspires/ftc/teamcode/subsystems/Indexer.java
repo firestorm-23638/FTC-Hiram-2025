@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -49,8 +50,9 @@ public class Indexer extends SubsystemBase {
         intakeIndex = closestIndex;
         motor.rotateToTick((int) closestTick);
     }
-
-    // rotates the spindexer motor once and updates the intake index
+    public Command rotateToNearestIndexCmd(){
+        return new InstantCommand(this::rotateToNearestIndex);
+    }
 
     @Override
     public void periodic() {
@@ -84,6 +86,7 @@ public class Indexer extends SubsystemBase {
         }
     }
 
+
     public CommandBase rotate120Cmd(boolean clockwise){
         return new InstantCommand(()->this.rotate120(clockwise));
     }
@@ -105,8 +108,24 @@ public class Indexer extends SubsystemBase {
         });
     }
 
+    public CommandBase rotateRightCmd(){
+        return new InstantCommand(() -> motor.setTargetPosition(motor.targetTick + 100));
+    }
+
+    public CommandBase rotateLeftCmd(){
+        return new InstantCommand(() -> motor.setTargetPosition(motor.targetTick - 100));
+    }
+
     public CommandBase setSlotColor(String colors) {
         return new InstantCommand(() -> setSlots(colors));
+    }
+
+    public CommandBase reset() {
+        return new InstantCommand(() -> {
+            motor.reset();
+            intakeIndex = 0;
+            sixtyDegreeRevolutions = 0;
+        });
     }
 
     public CommandBase goToSlotCmd(int slot) {
@@ -223,7 +242,7 @@ public class Indexer extends SubsystemBase {
         public final static float encoderResolution120 = encoderResolution / 3;
         public final static float encoderResolution60 = encoderResolution120 / 2;
         public final static float encoderResolution240 = encoderResolution120 * 2;
-        public final static float kP = (float) 1 / 2000;
+        public final static float kP = (float) 1 / 1750;
 
         /*
         float err = encoderResolution120 - motor.getCurrentPosition();
@@ -252,6 +271,9 @@ public class Indexer extends SubsystemBase {
             motor.setPower(power);
         }
 
+        public void setTargetPosition(int targetTick){
+            this.targetTick = targetTick;
+        }
         /**
          * Rotates the motor 120 degrees clockwise or counter-clockwise
          * @param clockwise Turn direction
@@ -285,6 +307,13 @@ public class Indexer extends SubsystemBase {
 
         public void rotateToTick(int tick) {
             targetTick = tick;
+        }
+
+        public void reset(){
+            targetTick = 0;
+            currentTick = 0;
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
         /**
