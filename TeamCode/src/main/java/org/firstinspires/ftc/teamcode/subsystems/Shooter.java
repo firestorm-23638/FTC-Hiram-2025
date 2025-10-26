@@ -44,10 +44,12 @@ public class Shooter extends SubsystemBase {
         this.currentRPM = getSpeed();
         double flywheelAccel = (currentRPM - lastRPM) / Math.max(1e3, dt);
 
-
-        double power = calculateShooterPower(targetRPM, this.currentRPM);
-        flywheelMotor.setPower(power);
-
+        if (targetRPM - currentRPM >= 500) {
+            flywheelMotor.setPower(MAX_SPEED);
+        } else {
+            double power = calculateShooterPower(targetRPM, this.currentRPM);
+            flywheelMotor.setPower(power);
+        }
 
         telemetry.addData("rpm", getSpeed());
         telemetry.addData("atSpeed", checkSpeed(targetRPM));
