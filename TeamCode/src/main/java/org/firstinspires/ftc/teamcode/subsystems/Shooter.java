@@ -10,13 +10,18 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Shooter extends SubsystemBase {
 
-    private final DcMotorEx flywheelMotor;
+    private final DcMotorEx leftFlywheelMotor;
+    private final DcMotorEx rightFlywheelMotor;
     private final Telemetry telemetry;
 
+    public static final double LOAD_CURRENT = 3;
     private static final double MAX_SPEED = 4200;
+    private boolean willReachTargetSpeed = false;
+    private static final double ACCEPTABLE_RPM_ERROR = 50;
     private double targetRPM = 0;
     private double currentRPM = 0;
     private double lastRPM = 0;
@@ -24,18 +29,15 @@ public class Shooter extends SubsystemBase {
     private long lastTime = 0;
 
     public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
-        flywheelMotor = hardwareMap.get(DcMotorEx.class, "shooter");
+        leftFlywheelMotor = hardwareMap.get(DcMotorEx.class, "leftShooter");
+        rightFlywheelMotor = hardwareMap.get(DcMotorEx.class, "rightShooter");
         this.telemetry = telemetry;
         lastTime = System.nanoTime();
     }
 
-    private double calculateShooterPower(double targetRPM, double currentRPM) {
+    private double calculateShooterPower() {
         double speedError = this.targetRPM - getSpeed();
 
-
-        if(targetRPM <= 0){
-            speedError = 0;
-        }
         return (this.targetRPM / MAX_SPEED) + (speedError * 0.0012);
     }
 
@@ -45,18 +47,35 @@ public class Shooter extends SubsystemBase {
         double dt = (now - lastTime) / 1e9;
         lastTime = now;
 
-        this.currentRPM = getSpeed();
+        currentRPM = getSpeed();
         double flywheelAccel = (currentRPM - lastRPM) / Math.max(1e3, dt);
 
+        if (targetRPM - currentRPM >= 500) {
+            setPower(MAX_SPEED);
+        } else {
+            double power = calculateShooterPower();
+            double current = leftFlywheelMotor.getCurrent(CurrentUnit.AMPS);
+            if (current > LOAD_CURRENT) {
+                power = Math.min(MAX_SPEED, power * 1.1);
+            }
+            setPower(power);
+        }
 
-        double power = calculateShooterPower(targetRPM, this.currentRPM);
-        flywheelMotor.setPower(power);
+        double ROC = (currentRPM - lastRPM) / dt;
 
+        if (currentRPM + (.5 * ROC) + ACCEPTABLE_RPM_ERROR > targetRPM) {
+            willReachTargetSpeed = true;
+        }
 
         telemetry.addData("rpm", getSpeed());
-        telemetry.addData("atSpeed", checkSpeed(targetRPM));
+        telemetry.addData("atSpeed", (targetRPM - currentRPM) <= 50);
         telemetry.addData("loopDt", dt);
         this.lastRPM = currentRPM;
+    }
+
+    public void setPower(double power) {
+        leftFlywheelMotor.setPower(power);
+        rightFlywheelMotor.setPower(-power);
     }
 
     // ramp up to certain rpm
@@ -69,22 +88,26 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command waitUntilFast(double targetSpeed) {
-        return new WaitUntilCommand(() -> checkSpeed(targetSpeed));
+        this.targetRPM = targetSpeed;
+        return new WaitUntilCommand(this::checkSpeed);
     }
 
     public Command stopShoot() {
-        return new InstantCommand(() -> setRPM(0), this);
+        return new InstantCommand(() -> setPower(0), this);
     }
 
     // return the current speed
     public double getSpeed() {
-        return flywheelMotor.getVelocity() / 28 * 60;
+        return leftFlywheelMotor.getVelocity() / 28 * 60;
     }
 
     // check that the current speed is close to the target speed
-    public boolean checkSpeed(double targetSpeed) {
-        return (getSpeed() > targetSpeed - 50);
-
+    public boolean checkSpeed() {
+        if (willReachTargetSpeed) {
+            willReachTargetSpeed = false;
+            return true;
+        }
+        return false;
     }
 
 }
