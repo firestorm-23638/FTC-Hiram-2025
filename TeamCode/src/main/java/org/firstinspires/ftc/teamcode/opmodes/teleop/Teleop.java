@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.command_factory.IndexerCommandFactory;
 import org.firstinspires.ftc.teamcode.command_factory.ShooterCommandFactory;
+import org.firstinspires.ftc.teamcode.commands.ArcadeDrive;
+import org.firstinspires.ftc.teamcode.commands.RepeatThriceCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -38,11 +40,16 @@ public class Teleop extends CommandOpMode {
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
+        drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
+                driver::getLeftX,
+                driver::getLeftY,
+                driver::getRightX));
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(new RepeatThriceCommand(IndexerCommandFactory.intakeArtifact(intake, indexer))).whenReleased(intake.stop());
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
+                .whenReleased(shooter.stopShoot());
 
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker));
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(IndexerCommandFactory.intakeArtifact(intake, indexer));
-
-        register(drivetrain, shooter, intake, kicker);
+        register(shooter, intake, kicker);
         schedule(new RunCommand(telemetry :: update));
     }
 

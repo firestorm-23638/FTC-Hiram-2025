@@ -32,6 +32,10 @@ public class Shooter extends SubsystemBase {
     private double calculateShooterPower(double targetRPM, double currentRPM) {
         double speedError = this.targetRPM - getSpeed();
 
+
+        if(targetRPM <= 0){
+            speedError = 0;
+        }
         return (this.targetRPM / MAX_SPEED) + (speedError * 0.0012);
     }
 
@@ -69,7 +73,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command stopShoot() {
-        return new InstantCommand(() -> flywheelMotor.setPower(0), this);
+        return new InstantCommand(() -> setRPM(0), this);
     }
 
     // return the current speed

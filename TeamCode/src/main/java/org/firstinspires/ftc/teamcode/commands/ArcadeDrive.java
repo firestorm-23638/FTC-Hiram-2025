@@ -29,7 +29,7 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.updateTeleOpDrive(x.getAsDouble(), y.getAsDouble(), rx.getAsDouble());
+        drivetrain.updateTeleOpDrive(-x.getAsDouble(), y.getAsDouble(), -rx.getAsDouble());
     }
 
     @Override

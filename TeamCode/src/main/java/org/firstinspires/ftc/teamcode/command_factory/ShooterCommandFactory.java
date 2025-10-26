@@ -13,8 +13,8 @@ public class ShooterCommandFactory {
     public static Command shootArtifact(Indexer indexer, Shooter shooter, Kicker kicker) {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        indexer.rotate60Cmd(true).andThen(indexer.nearTarget()),
-                        shooter.shootBall(3600).raceWith(shooter.waitUntilFast(3600))
+                        indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(500)),
+                        shooter.shootBall(3400).raceWith(shooter.waitUntilFast(3400))
                 ),
                 kicker.pushBall(),
                 kicker.retract(),

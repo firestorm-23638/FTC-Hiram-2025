@@ -39,6 +39,8 @@ public class RepeatThriceCommand extends CommandBase {
     public void end(boolean interrupted) {
         if (count != 3)
             mCommand.end(true);
+
+        count = 0;
     }
 
     @Override
