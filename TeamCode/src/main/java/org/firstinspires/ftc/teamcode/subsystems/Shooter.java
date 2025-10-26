@@ -19,6 +19,8 @@ public class Shooter extends SubsystemBase {
 
     public static final double LOAD_CURRENT = 3;
     private static final double MAX_SPEED = 4200;
+    private boolean willReachTargetSSpeed = false;
+    private static final double ACCEPTABLE_RPM_ERROR = 50;
     private double targetRPM = 0;
     private double currentRPM = 0;
     private double lastRPM = 0;
@@ -57,6 +59,12 @@ public class Shooter extends SubsystemBase {
             flywheelMotor.setPower(power);
         }
 
+        double ROC = (currentRPM - lastRPM) / dt;
+
+        if (currentRPM + (.5 * ROC) + ACCEPTABLE_RPM_ERROR > targetRPM) {
+            willReachTargetSSpeed = true;
+        }
+
         telemetry.addData("rpm", getSpeed());
         telemetry.addData("atSpeed", checkSpeed(targetRPM));
         telemetry.addData("loopDt", dt);
@@ -87,8 +95,11 @@ public class Shooter extends SubsystemBase {
 
     // check that the current speed is close to the target speed
     public boolean checkSpeed(double targetSpeed) {
-        return (getSpeed() > targetSpeed - 50);
-
+        if (willReachTargetSSpeed) {
+            willReachTargetSSpeed = false;
+            return true;
+        }
+        return false;
     }
 
 }
