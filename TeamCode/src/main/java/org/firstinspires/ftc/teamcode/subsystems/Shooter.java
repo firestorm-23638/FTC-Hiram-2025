@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
     private double calculateShooterPower(double targetRPM, double currentRPM) {
         double speedError = this.targetRPM - getSpeed();
 
-        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0005);
+        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0012);
     }
 
     @Override

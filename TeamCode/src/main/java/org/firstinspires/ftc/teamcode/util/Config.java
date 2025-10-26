@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Patterns;
 public class Config {
     public static Patterns CURRENT_PATTERN = null;
 
+    public static boolean isRedAlliance = true;
+
     public static char[] getMotif() {
         if(CURRENT_PATTERN == Patterns.GPP){
             return new char[]{'G', 'P', 'P'};

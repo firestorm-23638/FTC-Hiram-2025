@@ -24,25 +24,25 @@ public class MotorTest extends LinearOpMode {
         while(!opModeIsActive()){}
 
         while(opModeIsActive()) {
-            if (gamepad1.y) {
+            if (gamepad1.x) {
                 frontLeft.setPower(1);
             } else {
                 frontLeft.setPower(0);
             }
 
-            if (gamepad1.x) {
+            if (gamepad1.a) {
                 backLeft.setPower(1);
             } else {
                 backLeft.setPower(0);
             }
 
-            if (gamepad1.b) {
+            if (gamepad1.y) {
                 frontRight.setPower(1);
             } else {
                 frontRight.setPower(0);
             }
 
-            if (gamepad1.a) {
+            if (gamepad1.b) {
                 backRight.setPower(1);
             } else {
                 backRight.setPower(0);

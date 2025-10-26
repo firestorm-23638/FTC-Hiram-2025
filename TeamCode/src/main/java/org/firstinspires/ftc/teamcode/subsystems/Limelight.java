@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.util.Config;
 
 import java.util.List;
 
@@ -80,10 +81,13 @@ public class Limelight {
             int id = fiducial.getFiducialId(); // The ID number of the fiducial
             switch (id) {
                 case 21:
+                    Config.CURRENT_PATTERN = Patterns.GPP;
                     return Patterns.GPP;
                 case 22:
+                    Config.CURRENT_PATTERN = Patterns.PGP;
                     return Patterns.PGP;
                 case 23:
+                    Config.CURRENT_PATTERN = Patterns.PPG;
                     return Patterns.PPG;
                     default:
                         //throw new RuntimeException("Invalid case ID");
@@ -92,6 +96,24 @@ public class Limelight {
             }
         }
         return null;
+    }
+
+    public double getGoalAngle(boolean isRed) {
+        int id = isRed ? 24 : 20;
+        LLResult result = limelight.getLatestResult();
+        if (result.getStaleness() > 100 || !result.isValid()) {
+            return 0;
+        }
+
+        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        for (LLResultTypes.FiducialResult fiducialResult : fiducials) {
+            if (fiducialResult.getFiducialId() == id) {
+                return fiducialResult.getTargetXDegrees();
+            }
+        }
+
+        return 0;
+
     }
 }
 

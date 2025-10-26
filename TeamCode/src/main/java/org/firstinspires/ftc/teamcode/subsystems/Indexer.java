@@ -73,7 +73,20 @@ public class Indexer extends SubsystemBase {
     }
 
     public CommandBase nearTarget() {
-        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - 50 && motor.getCurrentTick() < motor.getTargetTick() + 50);
+        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - 50
+            && motor.getCurrentTick() < motor.getTargetTick() + 50
+            && motor.getVelocity() < 100);
+    }
+
+    public CommandBase goToBestStartingLocationCmd() {
+        return new InstantCommand(() -> {
+            int index = getBestStartingLocation();
+            moveToSlot(index);
+        });
+    }
+
+    public CommandBase setSlotColor(String colors) {
+        return new InstantCommand(() -> setSlots(colors));
     }
 
 
@@ -88,11 +101,23 @@ public class Indexer extends SubsystemBase {
     }
     // Rotates spindexer to the closest available slot
     public void moveToSlot(int slot) {
-        if (slot == intakeIndex) {
-            // already filled
-        } else{
-            motor.rotate120(Util.modPlusOne(intakeIndex) == slot);
+        if (slot > 2 || slot < 0)
+            throw new IllegalArgumentException("Slot must be between 0 and 2");
+
+        int indexDelta = slot - intakeIndex;
+        if (slot == 0 && intakeIndex == 2) {
+            indexDelta = 1;
+        } else if (slot == 2 && intakeIndex == 0) {
+            indexDelta = -1;
         }
+
+        boolean dir = indexDelta > 0;
+        for (int i = 0; i < Math.abs(indexDelta); i++) {
+            motor.rotate120(dir);
+        }
+
+        intakeIndex = slot;
+
     }
     // Finds the next available spindexer slot and rotates to it
     public void findEmptyAndMove() {
@@ -121,11 +146,11 @@ public class Indexer extends SubsystemBase {
         };
 
         char[] motif = Config.getMotif();
-        for(int i = 0; i<balls.length; i++){
+        for(int i = 0; i < balls.length; i++){
             if(i == 4)
                 return 0;
 
-            if(balls[i] == motif[0]&&balls[i+1] == motif[1]&&balls[i+2] == motif[2])
+            if(balls[i] == motif[0] && balls[i+1] == motif[1] && balls[i+2] == motif[2])
                 return i;
         }
         return 0;
@@ -136,9 +161,19 @@ public class Indexer extends SubsystemBase {
     public void ejectAll() {
         int bestStartingLocation = getBestStartingLocation();
         moveToSlot(bestStartingLocation);
-        for (int i = 0; i < 3; i++) {
-            //eject();
-            //rotate(true);
+    }
+
+    public void setSlots(String pattern) {
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            if (c == 'P')
+                slots[i].state = SlotState.PURPLE;
+
+            if (c == 'G')
+                slots[i].state = SlotState.GREEN;
+
+            if (c == 'E')
+                slots[i].state = SlotState.EMPTY;
         }
     }
 
@@ -235,6 +270,10 @@ public class Indexer extends SubsystemBase {
         }
         public int getTargetTick(){
             return  this.targetTick;
+        }
+
+        public double getVelocity() {
+            return motor.getVelocity();
         }
     }
 }
