@@ -68,7 +68,7 @@ public class Shooter extends SubsystemBase {
         }
 
         telemetry.addData("rpm", getSpeed());
-        telemetry.addData("atSpeed", (targetRPM - currentRPM) <= 50);
+        telemetry.addData("atSpeed", (targetRPM - currentRPM) <= ACCEPTABLE_RPM_ERROR);
         telemetry.addData("loopDt", dt);
         this.lastRPM = currentRPM;
     }
