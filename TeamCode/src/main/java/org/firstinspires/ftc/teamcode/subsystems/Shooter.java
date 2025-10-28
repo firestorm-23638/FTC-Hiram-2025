@@ -19,9 +19,9 @@ public class Shooter extends SubsystemBase {
     private final Telemetry telemetry;
 
     public static final double LOAD_CURRENT = 3;
-    private static final double MAX_SPEED = 4200;
+    private static final double MAX_SPEED = 4900;
     private boolean willReachTargetSpeed = false;
-    private static final double ACCEPTABLE_RPM_ERROR = 50;
+    private static final double ACCEPTABLE_RPM_ERROR = 80;
     private double targetRPM = 0;
     private double currentRPM = 0;
     private double lastRPM = 0;
@@ -37,8 +37,10 @@ public class Shooter extends SubsystemBase {
 
     private double calculateShooterPower() {
         double speedError = this.targetRPM - getSpeed();
-
-        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0012);
+        if (targetRPM == 0) {
+            speedError = 0;
+        }
+        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0005);
     }
 
     @Override
@@ -48,10 +50,8 @@ public class Shooter extends SubsystemBase {
         lastTime = now;
 
         currentRPM = getSpeed();
-        double flywheelAccel = (currentRPM - lastRPM) / Math.max(1e3, dt);
-
-        if (false) {
-            //setPower(MAX_SPEED);
+        if (this.targetRPM - this.currentRPM > 500) {
+            setPower(1);
         } else {
             double power = calculateShooterPower();
             double current = leftFlywheelMotor.getCurrent(CurrentUnit.AMPS);
@@ -63,10 +63,11 @@ public class Shooter extends SubsystemBase {
 
         double ROC = (currentRPM - lastRPM) / dt;
 
-        if (currentRPM + (.5 * ROC) + ACCEPTABLE_RPM_ERROR > targetRPM) {
+        if (currentRPM + (.2 * ROC) + ACCEPTABLE_RPM_ERROR > targetRPM) {
             willReachTargetSpeed = true;
         }
 
+        telemetry.addData("targetSpeed", targetRPM);
         telemetry.addData("rpm", getSpeed());
         telemetry.addData("atSpeed", (targetRPM - currentRPM) <= ACCEPTABLE_RPM_ERROR);
         telemetry.addData("loopDt", dt);
@@ -88,12 +89,15 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command waitUntilFast(double targetSpeed) {
-        this.targetRPM = targetSpeed;
-        return new WaitUntilCommand(this::checkSpeed);
+
+        return new WaitUntilCommand(() -> {
+            this.targetRPM = targetSpeed;
+            return this.checkSpeed();
+        });
     }
 
     public Command stopShoot() {
-        return new InstantCommand(() -> setPower(0), this);
+        return new InstantCommand(() -> setRPM(0), this);
     }
 
     // return the current speed
@@ -103,11 +107,7 @@ public class Shooter extends SubsystemBase {
 
     // check that the current speed is close to the target speed
     public boolean checkSpeed() {
-        if (willReachTargetSpeed) {
-            willReachTargetSpeed = false;
-            return true;
-        }
-        return false;
+        return Math.abs(this.currentRPM - this.targetRPM) <= ACCEPTABLE_RPM_ERROR;
     }
 
 }

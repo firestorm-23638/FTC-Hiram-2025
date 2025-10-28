@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -23,6 +24,7 @@ public class Indexer extends SubsystemBase {
     private int intakeIndex = 0;
     private static int sixtyDegreeRevolutions = 0;
     private final IntakeIndex[] slots = {new IntakeIndex(), new IntakeIndex(), new IntakeIndex()};
+    private static final int EPS = 25;
     private Telemetry telemetry;
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
@@ -37,26 +39,48 @@ public class Indexer extends SubsystemBase {
         float ticksAtOne = ticksAtZero + SpindexerMotor.encoderResolution120;
         float ticksAtTwo = ticksAtOne + SpindexerMotor.encoderResolution120;
 
+        int current = motor.getCurrentTick();
         float closestTick = ticksAtZero;
-        if (Math.abs((motor.getCurrentTick() - ticksAtOne)) < closest) {
-            closestIndex = 1;
+        float closestDist = Math.abs(current - ticksAtZero);
+
+        float d1 = Math.abs(current - ticksAtOne);
+        if (d1 < closestDist) {
+            closestDist = d1;
             closestTick = ticksAtOne;
+            closestIndex = 1;
         }
-        if (Math.abs((motor.getCurrentTick() - ticksAtTwo)) < closest) {
+
+        float d2 = Math.abs(current - ticksAtTwo);
+        if (d2 < closestDist) {
+            closestDist = d2;
             closestTick = ticksAtTwo;
             closestIndex = 2;
         }
 
         intakeIndex = closestIndex;
-        motor.rotateToTick((int) closestTick);
+        motor.rotateToTick((int)closestTick);
     }
+
+    public void rotateToNearestSlot() {
+        if (sixtyDegreeRevolutions != 0) {
+            boolean dir = !(sixtyDegreeRevolutions > 0);
+            motor.rotate60(dir);
+            sixtyDegreeRevolutions = 0;
+        }
+    }
+
     public Command rotateToNearestIndexCmd(){
-        return new InstantCommand(this::rotateToNearestIndex);
+        return new InstantCommand(this::rotateToNearestSlot);
     }
 
     @Override
     public void periodic() {
         motor.rotate();
+
+        if (motor.currentTick > motor.getTargetTick() - EPS
+            && motor.getCurrentTick() < motor.getTargetTick() + EPS) {
+            motor.clearErrors();
+        }
         telemetry.addData("CurrentTick", motor.currentTick);
         telemetry.addData("target", motor.targetTick);
     }
@@ -85,6 +109,9 @@ public class Indexer extends SubsystemBase {
             intakeIndex = Util.modMinusOne(intakeIndex);
         }
     }
+    public int getIntakeIndex() {
+        return this.intakeIndex;
+    }
 
 
     public CommandBase rotate120Cmd(boolean clockwise){
@@ -96,8 +123,8 @@ public class Indexer extends SubsystemBase {
     }
 
     public CommandBase nearTarget() {
-        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - 50
-            && motor.getCurrentTick() < motor.getTargetTick() + 50
+        return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - EPS
+            && motor.getCurrentTick() < motor.getTargetTick() + EPS
             && motor.getVelocity() < 100);
     }
 
@@ -242,8 +269,14 @@ public class Indexer extends SubsystemBase {
         public final static float encoderResolution120 = encoderResolution / 3;
         public final static float encoderResolution60 = encoderResolution120 / 2;
         public final static float encoderResolution240 = encoderResolution120 * 2;
-        public final static float kP = (float) 1 / 1750;
+        public final static double kP = (float) 1 / 2000;
+        public final static double kP2 = kP * 0.5;
+        public final static double kI = 0.00000000;
+        public final static double kD = 0.000000005;
 
+        private long lastTime = 0;
+        private double lastError = 0;
+        private double errors = 0;
         /*
         float err = encoderResolution120 - motor.getCurrentPosition();
         float power = kP * err;
@@ -255,6 +288,7 @@ public class Indexer extends SubsystemBase {
         */
         public SpindexerMotor(HardwareMap hw) {
             motor = hw.get(DcMotorEx.class, "spindexerMotor");
+            lastTime = System.nanoTime();
         }
 
         // Returns true if the motor is busy
@@ -264,11 +298,21 @@ public class Indexer extends SubsystemBase {
 
         // Rotates toward the target position
         public void rotate() {
+            long now = System.nanoTime();
+            double dt = (now - lastTime) / 1e9;
+
             currentTick = -motor.getCurrentPosition();
             float err = targetTick - currentTick;
-            float power = kP * err;
+            double errorDelta = (err - lastError) / dt;
+            errors += err * dt;
+            double kiPow = errors * kI;
+            double power = kP * err + kiPow;
 
             motor.setPower(power);
+        }
+
+        public void clearErrors() {
+            errors = 0;
         }
 
         public void setTargetPosition(int targetTick){

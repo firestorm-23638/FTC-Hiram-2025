@@ -41,26 +41,28 @@ public class Teleop extends CommandOpMode {
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
+
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
-                driver::getLeftX,
-                driver::getLeftY,
-                driver::getRightX));
+            driver::getLeftX,
+            driver::getLeftY,
+            driver::getRightX));
+
+
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(new RepeatThriceCommand(IndexerCommandFactory.intakeArtifact(intake, indexer)))
-                .whenReleased(intake.stop());
+            .whenReleased(intake.stop());
+
+
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
-                .whenReleased(
-                        new ParallelCommandGroup(
-                        shooter.stopShoot(),
-                        kicker.retract(),
-                        indexer.rotateToNearestIndexCmd()
-                        ));
+            .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
+            .whenReleased(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
+
+
         driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());
         driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(indexer.reset());
 
         register(shooter, intake, kicker);
-        schedule(new RunCommand(telemetry :: update));
+        schedule(new RunCommand(telemetry::update));
     }
 
 

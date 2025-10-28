@@ -28,9 +28,11 @@ public class ShooterTest extends CommandOpMode {
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
         this.indexer = new Indexer(hardwareMap, telemetry);
+
+
         this.driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
             .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
-            .whenReleased(shooter.stopShoot());
+            .whenReleased(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
 
         register(shooter, kicker, indexer);

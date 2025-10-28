@@ -22,7 +22,7 @@ public class Kicker extends SubsystemBase {
     }
 
     public Command pushBall(int millis) {
-        return setPos(millis, 0.15);
+        return setPos(millis, 0.27);
     }
 
     public Command retract(int millis) {
@@ -30,10 +30,10 @@ public class Kicker extends SubsystemBase {
     }
 
     public Command pushBall(){
-        return pushBall(1000);
+        return pushBall(400);
     }
     public Command retract(){
-        return retract(250);
+        return retract(150);
     }
 
 
