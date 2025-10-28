@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.geometry.Pose;
@@ -56,6 +57,9 @@ public class Teleop extends CommandOpMode {
             .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
             .whenReleased(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
+        new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >= 0.5)
+            .whenActive(new RepeatThriceCommand(ShooterCommandFactory.shootArtifactFar(indexer, shooter, kicker)))
+                .whenInactive(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());

@@ -40,6 +40,6 @@ public class ShooterCommandFactory {
             indexer.rotateToNearestIndexCmd(),
             shooter.stopShoot(),
             kicker.retract()
-        )
+        );
     }
 }
