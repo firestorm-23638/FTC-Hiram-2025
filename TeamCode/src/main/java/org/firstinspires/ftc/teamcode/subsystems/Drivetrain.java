@@ -43,7 +43,11 @@ public class Drivetrain extends SubsystemBase {
 
     //TODO: Finish this
     public void rotateYaw(double radians) {
-        
+        this.follower.turn(radians, true);
+    }
+
+    public void rotateTo(double radians) {
+        this.follower.turnTo(radians);
     }
 
 

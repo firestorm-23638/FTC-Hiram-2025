@@ -15,7 +15,7 @@ public class IndexerCommandFactory {
                 intake.waitUntilArtifactInjested(),
 //                new WaitCommand(50),
                 indexer.rotate120Cmd(false),
-                indexer.nearTarget()
+                indexer.nearTarget().withTimeout(500)
                 // add indexer when madox finished.
         );
     }
