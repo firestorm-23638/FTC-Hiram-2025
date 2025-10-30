@@ -27,7 +27,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 @Autonomous
-
 public class TopBlueAuto extends CommandOpMode {
     private Drivetrain drivetrain;
     private Shooter shooter;
@@ -113,7 +112,6 @@ public class TopBlueAuto extends CommandOpMode {
 
     @Override
     public void initialize() {
-        this.driver = new GamepadEx(this.gamepad1);
         this.indexer = new Indexer(hardwareMap, telemetry);
         this.drivetrain = new Drivetrain(hardwareMap, new Pose());
         this.shooter = new Shooter(hardwareMap, telemetry);
