@@ -269,10 +269,8 @@ public class Indexer extends SubsystemBase {
         public final static float encoderResolution120 = encoderResolution / 3;
         public final static float encoderResolution60 = encoderResolution120 / 2;
         public final static float encoderResolution240 = encoderResolution120 * 2;
-        public final static double kP = (float) 1 / 2000;
-        public final static double kP2 = kP * 0.5;
-        public final static double kI = 0.00000000;
-        public final static double kD = 0.000000005;
+        public final static double kP = 0.0005960185250345786;
+        public final static double kD = 0.0000123458;
 
         private long lastTime = 0;
         private double lastError = 0;
@@ -302,13 +300,12 @@ public class Indexer extends SubsystemBase {
             double dt = (now - lastTime) / 1e9;
 
             currentTick = -motor.getCurrentPosition();
-            float err = targetTick - currentTick;
-            double errorDelta = (err - lastError) / dt;
-            errors += err * dt;
-            double kiPow = errors * kI;
-            double power = kP * err + kiPow;
+            double err =  currentTick - targetTick;
+            double velError = -this.getVelocity() - 0;
 
-            motor.setPower(power);
+            double power = -(kP * err) - (kD * velError);
+
+            motor.setPower(power + Math.signum(power)*0.05);
         }
 
         public void clearErrors() {

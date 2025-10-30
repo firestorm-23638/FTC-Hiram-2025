@@ -17,6 +17,7 @@ public class Intake extends SubsystemBase {
     private DcMotor intakeRoller;
     private DigitalChannel beamBreak;
     private Telemetry telemetry;
+    private boolean isIntaking = false;
 
     public Intake(HardwareMap hMap, Telemetry telemetry) {
         intakeRoller = hMap.get(DcMotor.class, "intakeRoller");
@@ -30,11 +31,16 @@ public class Intake extends SubsystemBase {
     }
 
     public CommandBase intakeBall() {
-        return new InstantCommand(() -> intakeRoller.setPower(1), this);
+        return new InstantCommand(() -> {
+            intakeRoller.setPower(1);
+            isIntaking = true;
+        }, this);
     }
 
     public CommandBase ejectBall() {
-        return new InstantCommand(() -> intakeRoller.setPower(-1), this);
+        return new InstantCommand(() -> {
+            intakeRoller.setPower(-1);
+            isIntaking = false; }, this);
     }
 
     public boolean isBeamBroken() {

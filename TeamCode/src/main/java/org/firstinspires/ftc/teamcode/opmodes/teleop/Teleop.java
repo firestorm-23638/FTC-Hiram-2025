@@ -49,8 +49,11 @@ public class Teleop extends CommandOpMode {
             driver::getRightX));
 
 
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(new RepeatThriceCommand(IndexerCommandFactory.intakeArtifact(intake, indexer)))
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(intake.intakeBall())
             .whenReleased(intake.stop());
+
+        new Trigger(intake::isBeamBroken).and(driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER))
+                .whenActive(indexer.rotate120Cmd(false));
 
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
