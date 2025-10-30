@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -14,7 +15,9 @@ import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.command_factory.ShooterCommandFactory;
 import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
+import org.firstinspires.ftc.teamcode.commands.RepeatThriceCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -32,7 +35,6 @@ public class TopBlueAuto extends CommandOpMode {
     public Indexer indexer;
 
 
-        public class ThePaths {
 
             public PathBuilder builder = drivetrain.getPathBuilder();
 
@@ -94,8 +96,13 @@ public class TopBlueAuto extends CommandOpMode {
                     .addPath(new BezierLine(new Pose(22.622, 35.456), new Pose(59.819, 83.094)))
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
                     .build();
+            public PathChain leave = builder
+                    .addPath(new BezierLine(new Pose(59.819, 83.094), new Pose(36.326, 78.308)))
+                    .setTangentHeadingInterpolation()
+                    .build();
 
-    }
+
+
     @Override
     public void initialize() {
         this.driver = new GamepadEx(this.gamepad1);
@@ -109,10 +116,62 @@ public class TopBlueAuto extends CommandOpMode {
         schedule(new RunCommand(telemetry::update));
 
         new SequentialCommandGroup(
-                
+
+                new ParallelCommandGroup(
+                        new FollowPathCommand(drivetrain, scorePreload),
+                        shooter.rampUp(3200)
+                ),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                //shooting first ball
 
 
-        );
+                new ParallelCommandGroup(
+                        intake.intakeBall(),
+                        new FollowPathCommand(drivetrain, pickUpFirst)
+                        //picking up first batch
+                ),
+
+                new ParallelCommandGroup(
+                shooter.rampUp(3200),
+                new FollowPathCommand(drivetrain, scoreFirst)
+                //going to score first batch
+                ),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+
+                //2ND BATCH IS BELOW
+                new ParallelCommandGroup(
+                        intake.intakeBall(),
+                        new FollowPathCommand(drivetrain, pickUpSecond)
+                        //picking up second batch
+                ),
+
+                new ParallelCommandGroup(
+                        shooter.rampUp(3200),
+                        new FollowPathCommand(drivetrain, scoreSecond)
+                        //going to score second batch
+                ),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+
+                //THIRD BATCH IS BELOW
+
+                new ParallelCommandGroup(
+                        intake.intakeBall(),
+                        new FollowPathCommand(drivetrain, pickUpFirst)
+                        //picking up third batch
+                ),
+
+                new ParallelCommandGroup(
+                        shooter.rampUp(3200),
+                        new FollowPathCommand(drivetrain, scoreFirst)
+                        //going to score third batch
+                ),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+
+
+                //LEAVING BELOW
+                new FollowPathCommand(drivetrain, leave)
+                );
+
 
 
 

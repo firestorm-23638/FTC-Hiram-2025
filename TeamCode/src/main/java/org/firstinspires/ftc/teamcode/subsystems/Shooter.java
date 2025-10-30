@@ -88,6 +88,10 @@ public class Shooter extends SubsystemBase {
         return new RunCommand(() -> setRPM(targetSpeed), this);
     }
 
+    public Command rampUp(double targetSpeed){
+        return new InstantCommand(()->setRPM(targetSpeed), this);
+    }
+
     public Command waitUntilFast(double targetSpeed) {
 
         return new WaitUntilCommand(() -> {
