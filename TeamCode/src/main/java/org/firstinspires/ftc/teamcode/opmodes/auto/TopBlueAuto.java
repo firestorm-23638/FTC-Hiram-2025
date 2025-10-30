@@ -38,69 +38,128 @@ public class TopBlueAuto extends CommandOpMode {
 
             public PathBuilder builder = drivetrain.getPathBuilder();
 
-            public PathChain scorePreload = builder
-                    .addPath(
-                            new BezierLine(new Pose(51.118, 135.517), new Pose(60.471, 83.311))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(-90), Math.toRadians(135))
-                    .build();
+//            public PathChain scorePreload = builder
+//                    .addPath(
+//                            new BezierLine(new Pose(57, 135.517), new Pose(60.471, 83.311))
+//                    )
+//                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+//                    .build();
+//
+//            public PathChain goToFirst = builder
+//                    .addPath(new BezierLine(new Pose(60.471, 83.311), new Pose(45.46223564954683, 82.87613293051359)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+//                    .build();
+//            public PathChain pickUpFirst = builder
+//                    .addPath(new BezierLine(new Pose(20.012084592145015, 83.09365558912387), new Pose(16.314, 83.094)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+//                    .build();
+//
+//            public PathChain scoreFirst = builder
+//                    .addPath(new BezierLine(new Pose(16.314, 83.094), new Pose(60.254, 83.311)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+//                    .build();
+//
+//            public PathChain swerveToSecond = builder
+//                    .addPath(
+//                            new BezierCurve(
+//                                    new Pose(60.254, 83.311),
+//                                    new Pose(60.036, 61.776),
+//                                    new Pose(45.897, 58.731)
+//                            )
+//                    )
+//                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+//                    .build();
+//
+//            public PathChain pickUpSecond = builder
+//                    .addPath(new BezierLine(new Pose(45.897, 58.731), new Pose(17.837, 58.514)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+//                    .build();
+//
+//            public PathChain scoreSecond = builder
+//                    .addPath(new BezierLine(new Pose(17.837, 58.514), new Pose(60.471, 82.876)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+//                    .build();
+//
+//            public PathChain swerveToThird = builder
+//                    .addPath(
+//                            new BezierCurve(
+//                                    new Pose(60.471, 82.876),
+//                                    new Pose(62.864, 38.502),
+//                                    new Pose(40.024, 35.456)
+//                            )
+//                    )
+//                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+//                    .build();
+//
+//            public PathChain pickUpThird = builder
+//                    .addPath(new BezierLine(new Pose(40.024, 35.456), new Pose(22.622, 35.456)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+//                    .build();
+//
+//            public PathChain scoreThird = builder
+//                    .addPath(new BezierLine(new Pose(22.622, 35.456), new Pose(59.819, 83.094)))
+//                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+//                    .build();
+//            public PathChain leave = builder
+//                    .addPath(new BezierLine(new Pose(59.819, 83.094), new Pose(36.326, 78.308)))
+//                    .setTangentHeadingInterpolation()
+//                    .build();
+public  PathChain scorePreload = builder
+        .addPath(
+                new BezierLine(new Pose(51.118, 135.517), new Pose(58.949, 82.224))
+        )
+        .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(135))
+        .build();
 
-            public PathChain pickUpFirst = builder
-                    .addPath(new BezierLine(new Pose(60.471, 83.311), new Pose(16.314, 83.094)))
-                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-                    .build();
+    public PathChain goToFirst = builder
+            .addPath(new BezierLine(new Pose(58.949, 82.224), new Pose(40.242, 84.181)))
+            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+            .build();
 
-            public PathChain scoreFirst = builder
-                    .addPath(new BezierLine(new Pose(16.314, 83.094), new Pose(60.254, 83.311)))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-                    .build();
+    public PathChain pickUpFirst = builder
+            .addPath(new BezierLine(new Pose(40.242, 84.181), new Pose(12.616, 83.964)))
+            .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+            .build();
 
-            public PathChain swerveToSecond = builder
-                    .addPath(
-                            new BezierCurve(
-                                    new Pose(60.254, 83.311),
-                                    new Pose(60.036, 61.776),
-                                    new Pose(45.897, 58.731)
-                            )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-                    .build();
+    public PathChain scoreFirst = builder
+            .addPath(new BezierLine(new Pose(12.616, 83.964), new Pose(58.731, 82.441)))
+            .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+            .build();
 
-            public PathChain pickUpSecond = builder
-                    .addPath(new BezierLine(new Pose(45.897, 58.731), new Pose(17.837, 58.514)))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
+    public PathChain goToSecond = builder
+            .addPath(new BezierLine(new Pose(58.731, 82.441), new Pose(43.505, 60.254)))
+            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+            .build();
 
-            public PathChain scoreSecond = builder
-                    .addPath(new BezierLine(new Pose(17.837, 58.514), new Pose(60.471, 82.876)))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-                    .build();
+    public PathChain pickUpSecond = builder
+            .addPath(new BezierLine(new Pose(43.505, 60.254), new Pose(20.882, 60.036)))
+            .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+            .build();
 
-            public PathChain swerveToThird = builder
-                    .addPath(
-                            new BezierCurve(
-                                    new Pose(60.471, 82.876),
-                                    new Pose(62.864, 38.502),
-                                    new Pose(40.024, 35.456)
-                            )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-                    .build();
+    public PathChain scoreSecond = builder
+            .addPath(new BezierLine(new Pose(20.882, 60.036), new Pose(58.731, 82.441)))
+            .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+            .build();
 
-            public PathChain pickUpThird = builder
-                    .addPath(new BezierLine(new Pose(40.024, 35.456), new Pose(22.622, 35.456)))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
+    public PathChain goToThird = builder
+            .addPath(new BezierLine(new Pose(58.731, 82.441), new Pose(43.287, 35.674)))
+            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+            .build();
 
-            public PathChain scoreThird = builder
-                    .addPath(new BezierLine(new Pose(22.622, 35.456), new Pose(59.819, 83.094)))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-                    .build();
-            public PathChain leave = builder
-                    .addPath(new BezierLine(new Pose(59.819, 83.094), new Pose(36.326, 78.308)))
-                    .setTangentHeadingInterpolation()
-                    .build();
+    public PathChain pickUpThird = builder
+            .addPath(new BezierLine(new Pose(43.287, 35.674), new Pose(17.837, 35.891)))
+            .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+            .build();
 
+    public PathChain scoreThird = builder
+            .addPath(new BezierLine(new Pose(17.837, 35.891), new Pose(58.514, 83.094)))
+            .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+            .build();
+
+    public PathChain leave = builder
+            .addPath(new BezierLine(new Pose(58.514, 83.094), new Pose(31.758, 83.311)))
+            .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+            .build();
 
 
     @Override
@@ -117,53 +176,69 @@ public class TopBlueAuto extends CommandOpMode {
 
         new SequentialCommandGroup(
 
+                //shooting first ball
                 new ParallelCommandGroup(
                         new FollowPathCommand(drivetrain, scorePreload),
                         shooter.rampUp(3200)
                 ),
                 new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
-                //shooting first ball
 
 
+                //going to first batch
+                new FollowPathCommand(drivetrain, goToFirst),
+
+
+                //picking up first batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
                         new FollowPathCommand(drivetrain, pickUpFirst)
-                        //picking up first batch
                 ),
 
+                
+                //going to score first batch
                 new ParallelCommandGroup(
                 shooter.rampUp(3200),
                 new FollowPathCommand(drivetrain, scoreFirst)
-                //going to score first batch
                 ),
                 new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
 
+
                 //2ND BATCH IS BELOW
+
+                //going to second
+                new FollowPathCommand(drivetrain, goToSecond),
+
+
+                //picking up second batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
                         new FollowPathCommand(drivetrain, pickUpSecond)
-                        //picking up second batch
                 ),
 
+
+                //going to score second batch
                 new ParallelCommandGroup(
                         shooter.rampUp(3200),
                         new FollowPathCommand(drivetrain, scoreSecond)
-                        //going to score second batch
                 ),
                 new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
 
-                //THIRD BATCH IS BELOW
 
+                //THIRD BATCH IS BELOW
+                new FollowPathCommand(drivetrain, goToThird),
+
+
+                //picking up third batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new FollowPathCommand(drivetrain, pickUpFirst)
-                        //picking up third batch
+                        new FollowPathCommand(drivetrain, pickUpThird)
                 ),
 
+
+                //going to score third batch
                 new ParallelCommandGroup(
                         shooter.rampUp(3200),
-                        new FollowPathCommand(drivetrain, scoreFirst)
-                        //going to score third batch
+                        new FollowPathCommand(drivetrain, scoreThird)
                 ),
                 new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
 
