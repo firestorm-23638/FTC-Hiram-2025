@@ -57,4 +57,7 @@ public class Intake extends SubsystemBase {
         return new WaitUntilCommand(this::isBeamBroken);
     }
 
+    public boolean isIntaking() {
+        return isIntaking;
+    }
 }

@@ -73,6 +73,14 @@ public class Indexer extends SubsystemBase {
         return new InstantCommand(this::rotateToNearestSlot);
     }
 
+    public SlotState getCurrentSlot() {
+        return slots[intakeIndex].getState();
+    }
+
+    public int getTarget() {
+        return motor.getTargetTick();
+    }
+
     @Override
     public void periodic() {
         motor.rotate();

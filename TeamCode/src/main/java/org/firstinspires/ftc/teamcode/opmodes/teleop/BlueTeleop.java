@@ -24,15 +24,21 @@ import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.util.Config;
 
-@TeleOp(name = "TeleOp")
-public class Teleop extends CommandOpMode {
+@TeleOp(name = "Blue TeleOp")
+public class BlueTeleop extends CommandOpMode {
     private Drivetrain drivetrain;
     private GamepadEx driver;
     private Shooter shooter;
     private Intake intake;
     private Kicker kicker;
     private Indexer indexer;
+
+    public void setSide() {
+        Config.isRedAlliance = false;
+    }
+
 
     @Override
     public void initialize() {

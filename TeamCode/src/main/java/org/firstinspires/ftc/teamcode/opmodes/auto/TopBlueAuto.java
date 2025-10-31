@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -26,7 +27,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-@Autonomous
+@Autonomous(name = "Top Blue Auto", group = "Auto", preselectTeleOp = "Blue TeleOp")
 public class TopBlueAuto extends CommandOpMode {
     private Drivetrain drivetrain;
     private Shooter shooter;
@@ -34,9 +35,6 @@ public class TopBlueAuto extends CommandOpMode {
     private Kicker kicker;
     private Indexer indexer;
     private Limelight limelight;
-
-
-    private PathBuilder builder = drivetrain.getPathBuilder();
 
     protected PathChain scorePreload;
     protected PathChain goToFirst;
@@ -66,6 +64,7 @@ public class TopBlueAuto extends CommandOpMode {
         pickUpFirst = drivetrain.getPathBuilder()
             .addPath(new BezierLine(new Pose(40.242, 84.181), new Pose(12.616, 83.964)))
             .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+            .setBrakingStrength(0.75)
             .build();
 
         scoreFirst = drivetrain.getPathBuilder()
@@ -81,6 +80,7 @@ public class TopBlueAuto extends CommandOpMode {
         pickUpSecond = drivetrain.getPathBuilder()
             .addPath(new BezierLine(new Pose(43.505, 60.254), new Pose(20.882, 60.036)))
             .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+            .setBrakingStrength(0.75)
             .build();
 
         scoreSecond = drivetrain.getPathBuilder()
@@ -96,6 +96,7 @@ public class TopBlueAuto extends CommandOpMode {
         pickUpThird = drivetrain.getPathBuilder()
             .addPath(new BezierLine(new Pose(43.287, 35.674), new Pose(17.837, 35.891)))
             .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+            .setBrakingStrength(0.75)
             .build();
 
         scoreThird = drivetrain.getPathBuilder()
@@ -124,6 +125,9 @@ public class TopBlueAuto extends CommandOpMode {
         waitForStart();
         schedule(new RunCommand(telemetry::update));
         int targetSpeed = 3200;
+
+        new Trigger(intake::isBeamBroken).and(new Trigger(intake::isIntaking))
+            .whenActive(indexer.rotate120Cmd(false));
 
         new SequentialCommandGroup(
             new InstantCommand(limelight::init),
