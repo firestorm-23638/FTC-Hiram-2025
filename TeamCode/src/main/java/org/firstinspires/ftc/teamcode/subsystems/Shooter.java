@@ -19,7 +19,7 @@ public class Shooter extends SubsystemBase {
     private final Telemetry telemetry;
 
     public static final double LOAD_CURRENT = 3;
-    private static final double MAX_SPEED = 4900;
+    private static final double MAX_SPEED = 4670;
     private boolean willReachTargetSpeed = false;
     private static final double ACCEPTABLE_RPM_ERROR = 80;
     private double targetRPM = 0;

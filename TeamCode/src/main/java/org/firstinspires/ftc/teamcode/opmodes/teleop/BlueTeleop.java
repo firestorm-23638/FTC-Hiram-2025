@@ -48,7 +48,7 @@ public class BlueTeleop extends CommandOpMode {
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
-        
+
         setSide();
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
             driver::getLeftX,
