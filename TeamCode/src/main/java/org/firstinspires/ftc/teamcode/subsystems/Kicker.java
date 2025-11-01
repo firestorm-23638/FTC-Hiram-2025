@@ -30,10 +30,10 @@ public class Kicker extends SubsystemBase {
     }
 
     public Command pushBall(){
-        return pushBall(300);
+        return pushBall(400);
     }
     public Command retract(){
-        return retract(150);
+        return retract(200);
     }
 
 

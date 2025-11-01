@@ -70,8 +70,8 @@ public class Limelight {
 
         if (!result.isValid() && staleness > 100) {
             //throw new RuntimeException("Limelight result is invalid or stale");
-            telemetry.addData("limelight_error", "Limelight data is too stale (" + staleness + "ms)");
-            telemetry.update();
+//            telemetry.addData("limelight_error", "Limelight data is too stale (" + staleness + "ms)");
+//            telemetry.update();
             return null;
         }
 
@@ -91,8 +91,8 @@ public class Limelight {
                     return Patterns.PPG;
                     default:
                         //throw new RuntimeException("Invalid case ID");
-                        telemetry.addData("limelight_error", "ID:" + id);
-                        telemetry.update();
+//                        telemetry.addData("limelight_error", "ID:" + id);
+//                        telemetry.update();
             }
         }
         return null;

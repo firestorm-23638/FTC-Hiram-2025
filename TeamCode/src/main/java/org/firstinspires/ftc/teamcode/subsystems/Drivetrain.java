@@ -50,6 +50,10 @@ public class Drivetrain extends SubsystemBase {
         this.follower.turnTo(radians);
     }
 
+    public void setMax(double max) {
+        this.follower.setMaxPower(max);
+    }
+
 
     public Position getPosition() {
         return this.position;

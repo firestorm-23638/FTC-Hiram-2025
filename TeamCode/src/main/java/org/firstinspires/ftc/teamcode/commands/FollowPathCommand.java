@@ -7,8 +7,8 @@ import com.pedropathing.paths.PathChain;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 
 public class FollowPathCommand extends CommandBase {
-    private Drivetrain drivetrain;
-    private PathChain path;
+    protected Drivetrain drivetrain;
+    protected PathChain path;
 
     public FollowPathCommand(Drivetrain drivetrain, PathChain path) {
         this.drivetrain = drivetrain;
