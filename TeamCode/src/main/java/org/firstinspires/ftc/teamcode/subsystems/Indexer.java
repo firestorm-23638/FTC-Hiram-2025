@@ -25,7 +25,7 @@ public class Indexer extends SubsystemBase {
     private static int sixtyDegreeRevolutions = 0;
     private final IntakeIndex[] slots = {new IntakeIndex(), new IntakeIndex(), new IntakeIndex()};
     private static final int EPS = 25;
-    private Telemetry telemetry;
+    private final Telemetry telemetry;
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
         this.telemetry = telemetry;
@@ -39,18 +39,18 @@ public class Indexer extends SubsystemBase {
         float ticksAtOne = ticksAtZero + SpindexerMotor.encoderResolution120;
         float ticksAtTwo = ticksAtOne + SpindexerMotor.encoderResolution120;
 
-        int current = motor.getCurrentTick();
-        float closestTick = ticksAtZero;
-        float closestDist = Math.abs(current - ticksAtZero);
+        double current = motor.getCurrentTick();
+        double closestTick = ticksAtZero;
+        double closestDist = Math.abs(current - ticksAtZero);
 
-        float d1 = Math.abs(current - ticksAtOne);
+        double d1 = Math.abs(current - ticksAtOne);
         if (d1 < closestDist) {
             closestDist = d1;
             closestTick = ticksAtOne;
             closestIndex = 1;
         }
 
-        float d2 = Math.abs(current - ticksAtTwo);
+        double d2 = Math.abs(current - ticksAtTwo);
         if (d2 < closestDist) {
             closestDist = d2;
             closestTick = ticksAtTwo;
@@ -58,7 +58,7 @@ public class Indexer extends SubsystemBase {
         }
 
         intakeIndex = closestIndex;
-        motor.rotateToTick((int)closestTick);
+        motor.rotateToTick(closestTick);
     }
 
     public void rotateToNearestSlot() {
@@ -77,7 +77,7 @@ public class Indexer extends SubsystemBase {
         return slots[intakeIndex].getState();
     }
 
-    public int getTarget() {
+    public double getTarget() {
         return motor.getTargetTick();
     }
 
@@ -144,11 +144,11 @@ public class Indexer extends SubsystemBase {
     }
 
     public CommandBase rotateRightCmd(){
-        return new InstantCommand(() -> motor.setTargetPosition(motor.targetTick + 100));
+        return new InstantCommand(() -> motor.setTargetPosition((int) motor.targetTick + 100));
     }
 
     public CommandBase rotateLeftCmd(){
-        return new InstantCommand(() -> motor.setTargetPosition(motor.targetTick - 100));
+        return new InstantCommand(() -> motor.setTargetPosition((int) motor.targetTick - 100));
     }
 
     public CommandBase setSlotColor(String colors) {
@@ -270,8 +270,8 @@ public class Indexer extends SubsystemBase {
     }
 
     public static class SpindexerMotor {
-        private int currentTick;
-        private int targetTick;
+        private double currentTick;
+        private double targetTick;
         private final DcMotorEx motor;
         public final static float encoderResolution = 4096f;
         public final static float encoderResolution120 = encoderResolution / 3;
@@ -320,7 +320,7 @@ public class Indexer extends SubsystemBase {
             errors = 0;
         }
 
-        public void setTargetPosition(int targetTick){
+        public void setTargetPosition(double targetTick){
             this.targetTick = targetTick;
         }
         /**
@@ -332,9 +332,9 @@ public class Indexer extends SubsystemBase {
                 throw new RuntimeException("Motor is busy");
             }
             if (clockwise) {
-                targetTick = (int) (targetTick + encoderResolution120);
+                targetTick = targetTick + encoderResolution120;
             } else {
-                targetTick = (int) (targetTick - encoderResolution120);
+                targetTick = targetTick - encoderResolution120;
             }
         }
         /**
@@ -345,16 +345,14 @@ public class Indexer extends SubsystemBase {
             if (motor.isBusy()) {
                 return;
             }
-            int rev = (int) (currentTick / encoderResolution);
-            float rotStart = currentTick + (encoderResolution * rev);
             if (clockwise) {
-                targetTick = (int) (targetTick + encoderResolution60);
+                targetTick = targetTick + encoderResolution60;
             } else {
-                targetTick = (int) (targetTick - encoderResolution60);
+                targetTick = targetTick - encoderResolution60;
             }
         }
 
-        public void rotateToTick(int tick) {
+        public void rotateToTick(double tick) {
             targetTick = tick;
         }
 
@@ -373,10 +371,10 @@ public class Indexer extends SubsystemBase {
             return (int) (-motor.getCurrentPosition() / encoderResolution);
         }
 
-        public int getCurrentTick(){
+        public double getCurrentTick(){
             return this.currentTick;
         }
-        public int getTargetTick(){
+        public double getTargetTick(){
             return  this.targetTick;
         }
 
