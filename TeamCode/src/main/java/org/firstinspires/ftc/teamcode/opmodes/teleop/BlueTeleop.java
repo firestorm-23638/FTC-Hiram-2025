@@ -34,6 +34,7 @@ public class BlueTeleop extends CommandOpMode {
     private Intake intake;
     private Kicker kicker;
     private Indexer indexer;
+    private GamepadEx operator;
 
     public void setSide() {
         Config.isRedAlliance = false;
@@ -48,6 +49,7 @@ public class BlueTeleop extends CommandOpMode {
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
+        this.operator = new GamepadEx(this.gamepad2);
 
         setSide();
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
@@ -58,6 +60,8 @@ public class BlueTeleop extends CommandOpMode {
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(intake.intakeBall())
             .whenReleased(intake.stop());
+
+
 
         new Trigger(intake::isBeamBroken).and(driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER))
                 .whenActive(indexer.rotate120Cmd(false));
@@ -71,8 +75,13 @@ public class BlueTeleop extends CommandOpMode {
             .whenActive(new RepeatThriceCommand(ShooterCommandFactory.shootArtifactFar(indexer, shooter, kicker)))
                 .whenInactive(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(indexer.rotate120Cmd(false));
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(indexer.rotate120Cmd(true));
+
+        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(intake.ejectBall()).whenReleased(intake.stop());
         driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(indexer.reset());
 
         register(shooter, intake, kicker);

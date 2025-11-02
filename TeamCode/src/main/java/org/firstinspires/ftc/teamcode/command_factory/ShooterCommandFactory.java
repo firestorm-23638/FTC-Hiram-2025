@@ -36,10 +36,11 @@ public class ShooterCommandFactory {
     }
 
     public static Command resetShooter(Indexer indexer, Shooter shooter, Kicker kicker) {
-        return new ParallelCommandGroup(
-            indexer.rotateToNearestIndexCmd(),
-            shooter.stopShoot(),
-            kicker.retract()
+
+        return new SequentialCommandGroup(
+                kicker.retract(),
+                indexer.rotateToNearestIndexCmd(),
+                shooter.stopShoot()
         );
     }
 }

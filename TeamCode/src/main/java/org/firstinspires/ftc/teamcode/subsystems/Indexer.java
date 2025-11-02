@@ -313,7 +313,7 @@ public class Indexer extends SubsystemBase {
 
             double power = -(kP * err) - (kD * velError);
 
-            motor.setPower(power + Math.signum(power)*0.05);
+            motor.setPower(power + Math.signum(power)*0.01);
         }
 
         public void clearErrors() {
