@@ -7,20 +7,22 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Intake extends SubsystemBase {
-    private DcMotor intakeRoller;
+    private DcMotorEx intakeRoller;
     private DigitalChannel beamBreak;
     private Telemetry telemetry;
     private boolean isIntaking = false;
 
     public Intake(HardwareMap hMap, Telemetry telemetry) {
-        intakeRoller = hMap.get(DcMotor.class, "intakeRoller");
+        intakeRoller = hMap.get(DcMotorEx.class, "intakeRoller");
         intakeRoller.setDirection(DcMotorSimple.Direction.REVERSE);
         beamBreak = hMap.digitalChannel.get("beamBreak");
         this.telemetry = telemetry;
