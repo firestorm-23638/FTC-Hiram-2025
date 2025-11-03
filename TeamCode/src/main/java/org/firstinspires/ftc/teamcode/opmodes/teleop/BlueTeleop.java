@@ -45,7 +45,7 @@ public class BlueTeleop extends CommandOpMode {
     public void initialize() {
         this.driver = new GamepadEx(this.gamepad1);
         this.indexer = new Indexer(hardwareMap, telemetry);
-        this.drivetrain = new Drivetrain(hardwareMap, new Pose());
+        this.drivetrain = Drivetrain.getInstance(hardwareMap, new Pose(0,0, Math.toRadians(90)));
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);

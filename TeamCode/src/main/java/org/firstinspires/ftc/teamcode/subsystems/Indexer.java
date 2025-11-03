@@ -24,7 +24,7 @@ public class Indexer extends SubsystemBase {
     private int intakeIndex = 0;
     private static int sixtyDegreeRevolutions = 0;
     private final IntakeIndex[] slots = {new IntakeIndex(), new IntakeIndex(), new IntakeIndex()};
-    private static final int EPS = 25;
+    private static final int EPS = 30;
     private Telemetry telemetry;
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
@@ -277,8 +277,8 @@ public class Indexer extends SubsystemBase {
         public final static float encoderResolution120 = encoderResolution / 3;
         public final static float encoderResolution60 = encoderResolution120 / 2;
         public final static float encoderResolution240 = encoderResolution120 * 2;
-        public final static double kP = 0.0005960185250345786;
-        public final static double kD = 0.0000123458;
+        public final static double kP = 0.0005;
+        public final static double kD = 0.0000143458;
 
         private long lastTime = 0;
         private double lastError = 0;

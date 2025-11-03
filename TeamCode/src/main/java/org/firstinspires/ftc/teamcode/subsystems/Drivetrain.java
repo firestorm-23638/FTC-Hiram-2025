@@ -20,6 +20,15 @@ public class Drivetrain extends SubsystemBase {
     private final Follower follower;
     private Position position;
     private static final double kp = 0.035;
+    private static Drivetrain drivetrain;
+
+    public static Drivetrain getInstance(HardwareMap hardwareMap, Pose pose) {
+        if (drivetrain == null) {
+            drivetrain = new Drivetrain(hardwareMap, pose);
+        }
+
+        return drivetrain;
+    }
 
     public Drivetrain(HardwareMap hw, Pose pose) {
         follower = Constants.createFollower(hw);
@@ -35,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateTeleOpDrive(double x, double y, double rx) {
-        follower.setTeleOpDrive(y,x,rx, true);
+        follower.setTeleOpDrive(y,x,rx, false);
     }
     public void startTeleOpDrive(){
         follower.startTeleopDrive();
