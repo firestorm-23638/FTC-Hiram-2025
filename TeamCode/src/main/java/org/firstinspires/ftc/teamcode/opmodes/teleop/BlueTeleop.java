@@ -52,10 +52,11 @@ public class BlueTeleop extends CommandOpMode {
         this.operator = new GamepadEx(this.gamepad2);
 
         setSide();
+        double dir = Config.isRedAlliance ? 1 : -1;
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
-            driver::getLeftX,
-            driver::getLeftY,
-            driver::getRightX));
+            () -> driver.getLeftX() * dir,
+            () -> driver.getLeftY() * dir,
+            () -> driver.getRightX() * dir));
 
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(intake.intakeBall())
