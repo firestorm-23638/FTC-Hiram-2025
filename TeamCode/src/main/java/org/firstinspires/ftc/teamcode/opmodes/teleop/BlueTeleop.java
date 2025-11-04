@@ -78,8 +78,8 @@ public class BlueTeleop extends CommandOpMode {
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
         operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());
-        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(indexer.rotate120Cmd(false));
-        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(indexer.rotate120Cmd(true));
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(indexer.rotate120Cmd(false));
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(indexer.rotate120Cmd(true));
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(intake.ejectBall()).whenReleased(intake.stop());
         driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(indexer.reset());
