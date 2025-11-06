@@ -7,7 +7,7 @@ public class Aimer {
     // every 6 inches
     private final double[] rpmMap = {1, 2, 3};
     private final boolean isBlue;
-    private Drivetrain drivetrain;
+    private final Drivetrain drivetrain;
     public Aimer(Drivetrain drivetrain, boolean isBlue) {
         this.isBlue = isBlue;
         this.drivetrain = drivetrain;
