@@ -13,9 +13,16 @@ public class RedTeleop extends BlueTeleop {
         Config.isRedAlliance = true;
     }
 
+    private double makeXRed(double x) {
+        return 144 - x;
+    }
+
+    private double makeAngRed(double x) {
+        return 180 - x;
+    }
     @Override
     public Pose startPose(){
-        return new Pose(0, 0, Math.toRadians(180));
+        return new Pose(115.109402086, 135.240909836, makeAngRed(315));
 
     }
 }

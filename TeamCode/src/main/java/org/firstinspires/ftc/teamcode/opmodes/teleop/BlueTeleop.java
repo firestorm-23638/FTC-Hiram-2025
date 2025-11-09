@@ -41,7 +41,7 @@ public class BlueTeleop extends CommandOpMode {
     }
 
     public Pose startPose(){
-        return new Pose(0, 0, Math.toRadians(0));
+        return new Pose(25.733, 123.2, Math.toRadians(315));
     }
 
     @Override

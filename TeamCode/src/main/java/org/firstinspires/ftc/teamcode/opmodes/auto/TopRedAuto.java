@@ -104,15 +104,15 @@ public class TopRedAuto extends TopBlueAuto {
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
-        scoreThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(22), 37), new Pose(makeXRed(62.5), 86.6)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(177)), Math.toRadians(makeAngRed(shootAng+3)))
-                .build();
-
-        leave = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(50), 54)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+3)), Math.toRadians(makeAngRed(pickUpAng)))
-                .build();
+//        scoreThird = drivetrain.getPathBuilder()
+//                .addPath(new BezierLine(new Pose(makeXRed(22), 37), new Pose(makeXRed(62.5), 86.6)))
+//                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(177)), Math.toRadians(makeAngRed(shootAng+3)))
+//                .build();
+//
+//        leave = drivetrain.getPathBuilder()
+//                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(50), 54)))
+//                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+3)), Math.toRadians(makeAngRed(pickUpAng)))
+//                .build();
     }
 
     @Override

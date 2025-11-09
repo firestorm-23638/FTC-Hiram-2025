@@ -131,15 +131,15 @@ public class TopBlueAuto extends CommandOpMode {
                 .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
-        scoreThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(22, 37), new Pose(60.5, 86.6)))
-                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+3))
-                .build();
-
-        leave = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(50, 54)))
-                .setLinearHeadingInterpolation(Math.toRadians(shootAng+3), Math.toRadians(pickUpAng))
-                .build();
+//        scoreThird = drivetrain.getPathBuilder()
+//                .addPath(new BezierLine(new Pose(22, 37), new Pose(60.5, 86.6)))
+//                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+3))
+//                .build();
+//
+//        leave = drivetrain.getPathBuilder()
+//                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(50, 54)))
+//                .setLinearHeadingInterpolation(Math.toRadians(shootAng+3), Math.toRadians(pickUpAng))
+//                .build();
     }
 
 
