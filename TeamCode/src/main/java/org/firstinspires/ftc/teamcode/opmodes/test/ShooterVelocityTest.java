@@ -1,27 +1,25 @@
 package org.firstinspires.ftc.teamcode.opmodes.test;
 
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+
 @TeleOp(name = "Shooter Velocity Test", group = "Velocity Tests")
-public class ShooterVelocityTest extends OpMode {
-    private DcMotorEx leftFlywheelMotor;
-    private DcMotorEx rightFlywheelMotor;
-
-
+public class ShooterVelocityTest extends CommandOpMode {
+    private Shooter shooter;
     @Override
-    public void init() {
-        leftFlywheelMotor = hardwareMap.get(DcMotorEx.class, "leftShooter");
-        rightFlywheelMotor = hardwareMap.get(DcMotorEx.class, "rightShooter");
-    }
+    public void initialize() {
+        this.shooter = new Shooter(hardwareMap, telemetry);
 
-    @Override
-    public void loop() {
-        leftFlywheelMotor.setPower(1);
-        rightFlywheelMotor.setPower(-1);
 
-        telemetry.addData("Left RPM", leftFlywheelMotor.getVelocity() / 28 * 60);
-        telemetry.update();
+        register(shooter);
+        waitForStart();
+
+        schedule(shooter.shootBall(3100));
+        schedule(new RunCommand(telemetry::update));
     }
 }
