@@ -35,6 +35,7 @@ public class ShooterCommandFactory {
         );
     }
 
+
     public static Command resetShooter(Indexer indexer, Shooter shooter, Kicker kicker) {
 
         return new SequentialCommandGroup(
@@ -42,5 +43,17 @@ public class ShooterCommandFactory {
                 indexer.rotateToNearestIndexCmd(),
                 shooter.shootBall(1000)
         );
+    }
+
+
+    public static Command revUpForAuto(Indexer indexer, Shooter shooter, Kicker kicker){
+
+        return new SequentialCommandGroup(
+                kicker.retract(),
+                indexer.rotateToNearestIndexCmd(),
+                shooter.rampUp(2500)
+        );
+
+
     }
 }

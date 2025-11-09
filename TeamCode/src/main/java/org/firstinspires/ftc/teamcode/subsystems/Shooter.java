@@ -39,10 +39,10 @@ public class Shooter extends SubsystemBase {
 
     private double calculateShooterPower() {
         double speedError = this.targetRPM - getSpeed();
-        if (targetRPM == 0) {
+        if (targetRPM == 0 || targetRPM == 1000) {
             speedError = 0;
         }
-        return ((this.targetRPM / MAX_SPEED) + (speedError * 0.00014)) * (12/voltageSensor.getVoltage());// ;
+        return ((this.targetRPM / MAX_SPEED) + (speedError * 0.00035)) * (12/voltageSensor.getVoltage());// ;
     }
 
     @Override

@@ -131,15 +131,15 @@ public class TopBlueAuto extends CommandOpMode {
                 .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
-//        scoreThird = drivetrain.getPathBuilder()
-//                .addPath(new BezierLine(new Pose(22, 37), new Pose(60.5, 86.6)))
-//                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+3))
-//                .build();
-//
-//        leave = drivetrain.getPathBuilder()
-//                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(50, 54)))
-//                .setLinearHeadingInterpolation(Math.toRadians(shootAng+3), Math.toRadians(pickUpAng))
-//                .build();
+        scoreThird = drivetrain.getPathBuilder()
+                .addPath(new BezierLine(new Pose(22, 37), new Pose(60.5, 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+3))
+                .build();
+
+        leave = drivetrain.getPathBuilder()
+                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(50, 54)))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+3), Math.toRadians(pickUpAng))
+                .build();
     }
 
 
@@ -196,11 +196,15 @@ public class TopBlueAuto extends CommandOpMode {
                         intake.intakeBall(),
                         new SlowFollowPath(drivetrain, pickUpFirst, 0.3)
                 ),
-                indexer.setSlotColor("GPP"),
+
+                new ParallelCommandGroup(
+                        indexer.setSlotColor("GPP"),
+                        ShooterCommandFactory.revUpForAuto(indexer, shooter, kicker)
+                ),
 
                 //going to score first batch
                 new ParallelCommandGroup(
-                        shooter.rampUp(targetSpeed),
+//                        shooter.rampUp(targetSpeed),
                         intake.ejectBall(),
                         indexer.goToBestStartingLocationCmd(),
                         new FollowPathCommand(drivetrain, scoreFirst)
@@ -227,12 +231,16 @@ public class TopBlueAuto extends CommandOpMode {
                         intake.intakeBall(),
                         new SlowFollowPath(drivetrain, pickUpSecond, 0.27)
                 ),
-                indexer.setSlotColor("PGP"),
+
+                new ParallelCommandGroup(
+                ShooterCommandFactory.revUpForAuto(indexer, shooter, kicker),
+                indexer.setSlotColor("PGP")
+                ),
 
                 //going to score second batch
                 new ParallelCommandGroup(
                         indexer.goToBestStartingLocationCmd(),
-                        shooter.rampUp(targetSpeed),
+//                        shooter.rampUp(targetSpeed),
                         new FollowPathCommand(drivetrain, scoreSecond),
                         intake.ejectBall()
                 ),
@@ -248,15 +256,16 @@ public class TopBlueAuto extends CommandOpMode {
                 //picking up third batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpThird, 0.4)
+                        new SlowFollowPath(drivetrain, pickUpThird, 0.3)
                 ),
 
                 //going to score third batch
-//                new ParallelCommandGroup(
+                new ParallelCommandGroup(
+                        ShooterCommandFactory.revUpForAuto(indexer, shooter, kicker),
 //                        shooter.rampUp(targetSpeed),
-//                        new FollowPathCommand(drivetrain, scoreThird)
-//                ),
-//                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                        new FollowPathCommand(drivetrain, scoreThird)
+                ),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
 
 
                 //LEAVING BELOW

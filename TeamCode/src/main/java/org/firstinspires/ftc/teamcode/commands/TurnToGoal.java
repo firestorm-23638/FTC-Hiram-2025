@@ -4,22 +4,27 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight;
+import org.firstinspires.ftc.teamcode.util.Config;
 
 import java.util.function.DoubleSupplier;
 
-public class ArcadeDrive extends CommandBase {
+public class TurnToGoal extends CommandBase {
     private Drivetrain drivetrain;
-    private DoubleSupplier x,y,rx;
+    private DoubleSupplier x,y;
+    private Limelight limelight;
 
-    public ArcadeDrive(Drivetrain drivetrain,
+    public TurnToGoal(Drivetrain drivetrain,
+                       Limelight limelight,
                        DoubleSupplier x,
-                       DoubleSupplier y,
-                       DoubleSupplier rx) {
+                       DoubleSupplier y
+                       ) {
 
         this.drivetrain = drivetrain;
         this.x = x;
         this.y = y;
-        this.rx = rx;
+        this.limelight = limelight;
+
         addRequirements(this.drivetrain);
     }
     @Override
@@ -29,7 +34,7 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.updateTeleOpDrive(-x.getAsDouble(), y.getAsDouble(), -rx.getAsDouble());
+        drivetrain.updateTeleOpDrive(-x.getAsDouble(), y.getAsDouble(), -limelight.getGoalAngle(Config.isRedAlliance)/80d);
     }
 
     @Override
@@ -41,5 +46,5 @@ public class ArcadeDrive extends CommandBase {
     public void end(boolean interrupted) {
         super.end(interrupted);
     }
-}
 
+}

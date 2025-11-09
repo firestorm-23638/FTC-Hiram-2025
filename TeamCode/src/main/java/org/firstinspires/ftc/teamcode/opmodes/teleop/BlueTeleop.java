@@ -19,10 +19,12 @@ import org.firstinspires.ftc.teamcode.command_factory.IndexerCommandFactory;
 import org.firstinspires.ftc.teamcode.command_factory.ShooterCommandFactory;
 import org.firstinspires.ftc.teamcode.commands.ArcadeDrive;
 import org.firstinspires.ftc.teamcode.commands.RepeatThriceCommand;
+import org.firstinspires.ftc.teamcode.commands.TurnToGoal;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.subsystems.Limelight;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.util.Config;
 
@@ -35,6 +37,7 @@ public class BlueTeleop extends CommandOpMode {
     private Kicker kicker;
     private Indexer indexer;
     private GamepadEx operator;
+    private Limelight limelight;
 
     public void setSide() {
         Config.isRedAlliance = false;
@@ -53,6 +56,7 @@ public class BlueTeleop extends CommandOpMode {
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
         this.operator = new GamepadEx(this.gamepad2);
+        this.limelight = new Limelight(hardwareMap, drivetrain);
 
         setSide();
         double dir = Config.isRedAlliance ? 1 : -1;
@@ -91,8 +95,9 @@ public class BlueTeleop extends CommandOpMode {
 
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
-            .whenReleased(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
+                .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker))
+                        .alongWith(new TurnToGoal(drivetrain, limelight, ()-> driver.getLeftX(), ()-> driver.getLeftY())))
+                .whenReleased(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
         new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >= 0.5)
             .whenActive(new RepeatThriceCommand(ShooterCommandFactory.shootArtifactFar(indexer, shooter, kicker)))
@@ -109,6 +114,8 @@ public class BlueTeleop extends CommandOpMode {
         driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(indexer.reset());
 
         register(shooter, intake, kicker);
+        schedule(new InstantCommand(limelight::init));
+        waitForStart();
         schedule(new RunCommand(telemetry::update));
         schedule(new RunCommand(()->{
                 telemetry.addData("x", drivetrain.getPosition().getX());
