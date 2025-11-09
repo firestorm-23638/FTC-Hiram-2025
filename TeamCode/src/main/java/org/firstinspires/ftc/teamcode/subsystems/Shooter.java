@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase {
     public static final double LOAD_CURRENT = 3;
     private static final double MAX_SPEED = 4670;
     private boolean willReachTargetSpeed = false;
-    private static final double ACCEPTABLE_RPM_ERROR = 80;
+    private static final double ACCEPTABLE_RPM_ERROR = 150;
     private double targetRPM = 0;
     private double currentRPM = 0;
     private double lastRPM = 0;
@@ -37,10 +37,10 @@ public class Shooter extends SubsystemBase {
 
     private double calculateShooterPower() {
         double speedError = this.targetRPM - getSpeed();
-        if (targetRPM == 0) {
+        if (targetRPM == 0 || targetRPM == 1000) {
             speedError = 0;
         }
-        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0005);
+        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0001);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class Shooter extends SubsystemBase {
 
     // check that the current speed is close to the target speed
     public boolean checkSpeed() {
-        return Math.abs(this.currentRPM - this.targetRPM) <= ACCEPTABLE_RPM_ERROR;
+        return (this.targetRPM - this.currentRPM) <= ACCEPTABLE_RPM_ERROR;
     }
 
 }

@@ -40,12 +40,15 @@ public class BlueTeleop extends CommandOpMode {
         Config.isRedAlliance = false;
     }
 
+    public Pose startPose(){
+        return new Pose(0, 0, Math.toRadians(0));
+    }
 
     @Override
     public void initialize() {
         this.driver = new GamepadEx(this.gamepad1);
         this.indexer = new Indexer(hardwareMap, telemetry);
-        this.drivetrain = Drivetrain.getInstance(hardwareMap, new Pose(0,0, Math.toRadians(90)));
+        this.drivetrain = Drivetrain.getInstance(hardwareMap, startPose());
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
@@ -56,7 +59,7 @@ public class BlueTeleop extends CommandOpMode {
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
             () -> driver.getLeftX() * dir,
             () -> driver.getLeftY() * dir,
-            () -> driver.getRightX() * dir));
+            () -> driver.getRightX()));
 
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(intake.intakeBall())
@@ -66,6 +69,25 @@ public class BlueTeleop extends CommandOpMode {
 
         new Trigger(intake::isBeamBroken).and(driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER))
                 .whenActive(indexer.rotate120Cmd(false));
+
+        new Trigger(intake::isIntaking).and(new Trigger(indexer::checkJam)).whenActive(
+                new SequentialCommandGroup(
+                        indexer.rotate120Cmd(true),
+                        intake.ejectBall(),
+                        new WaitCommand(300),
+                        intake.intakeBall()
+            )
+        );
+
+        new Trigger(intake :: checkJam).whenActive(
+                new SequentialCommandGroup(
+                    intake.ejectBall(),
+                    new WaitCommand(300),
+                    intake.intakeBall()
+
+                )
+        );
+
 
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -77,16 +99,26 @@ public class BlueTeleop extends CommandOpMode {
                 .whenInactive(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
 
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateRightCmd());
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateLeftCmd());
-        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(indexer.rotate120Cmd(false));
-        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(indexer.rotate120Cmd(true));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(indexer.rotateRightCmd());
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(indexer.rotateLeftCmd());
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(indexer.rotate120Cmd(false));
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(indexer.rotate120Cmd(true));
 
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(intake.ejectBall()).whenReleased(intake.stop());
         driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(indexer.reset());
 
         register(shooter, intake, kicker);
         schedule(new RunCommand(telemetry::update));
+        schedule(new RunCommand(()->{
+                telemetry.addData("x", drivetrain.getPosition().getX());
+                telemetry.addData("y", drivetrain.getPosition().getY());
+                telemetry.addData("heading", drivetrain.getPosition().getHeadingRadians());
+
+        }
+
+        ));
+
     }
 
 

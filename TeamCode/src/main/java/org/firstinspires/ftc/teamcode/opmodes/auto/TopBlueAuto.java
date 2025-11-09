@@ -65,7 +65,7 @@ public class TopBlueAuto extends CommandOpMode {
     protected void buildPaths(Drivetrain drivetrain) {
 
         int pickUpAng = 180;
-        int shootAng = 128;
+        int shootAng = 132;
 
         scanObelisk = drivetrain.getPathBuilder()
                 .addPath(
@@ -95,35 +95,35 @@ public class TopBlueAuto extends CommandOpMode {
                 .build();
 
         pickUpFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(48, 83.86), new Pose(22, 83.86)))
+                .addPath(new BezierLine(new Pose(48, 83.86), new Pose(19, 83.86)))
                 .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
         scoreFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(22, 83.86), new Pose(60.5, 86.6)))
-                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng))
+                .addPath(new BezierLine(new Pose(19, 83.86), new Pose(60.5, 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+6))
                 .build();
 
         goToSecond = drivetrain.getPathBuilder()
                 .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(45.8, 60)))
-                .setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(pickUpAng))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+6), Math.toRadians(pickUpAng))
                 .setBrakingStrength(0.5)
                 .setBrakingStart(2)
                 .build();
 
         pickUpSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(45.8, 60), new Pose(22, 60)))
+                .addPath(new BezierLine(new Pose(45.8, 60), new Pose(19, 60)))
                 .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
         scoreSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(30, 67), new Pose(60.5, 86.6)))
-                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng))
+                .addPath(new BezierLine(new Pose(19, 60), new Pose(60.5, 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+6))
                 .build();
 
         goToThird = drivetrain.getPathBuilder()
                 .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(45.8, 37)))
-                .setLinearHeadingInterpolation(Math.toRadians(shootAng), Math.toRadians(pickUpAng))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+6), Math.toRadians(pickUpAng))
                 .build();
 
         pickUpThird = drivetrain.getPathBuilder()
@@ -133,12 +133,12 @@ public class TopBlueAuto extends CommandOpMode {
 
         scoreThird = drivetrain.getPathBuilder()
                 .addPath(new BezierLine(new Pose(22, 37), new Pose(60.5, 86.6)))
-                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+3))
                 .build();
 
         leave = drivetrain.getPathBuilder()
                 .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(50, 54)))
-                .setLinearHeadingInterpolation(Math.toRadians(shootAng), Math.toRadians(pickUpAng))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+3), Math.toRadians(pickUpAng))
                 .build();
     }
 
@@ -160,7 +160,7 @@ public class TopBlueAuto extends CommandOpMode {
             telemetry.addData("driveX:", drivetrain.getPosition().getX());
             telemetry.addData("driveY:", drivetrain.getPosition().getY());
         })) ;
-        int targetSpeed = 2900;
+        int targetSpeed = 3100;
 
         new Trigger(intake::isBeamBroken).and(new Trigger(intake::isIntaking))
                 .whenActive(indexer.rotate120Cmd(false));
@@ -194,7 +194,7 @@ public class TopBlueAuto extends CommandOpMode {
                 //picking up first batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpFirst, 0.35)
+                        new SlowFollowPath(drivetrain, pickUpFirst, 0.3)
                 ),
                 indexer.setSlotColor("GPP"),
 
@@ -225,7 +225,7 @@ public class TopBlueAuto extends CommandOpMode {
                 //picking up second batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpSecond, 0.3)
+                        new SlowFollowPath(drivetrain, pickUpSecond, 0.27)
                 ),
                 indexer.setSlotColor("PGP"),
 

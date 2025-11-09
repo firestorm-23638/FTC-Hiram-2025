@@ -20,12 +20,16 @@ public class Intake extends SubsystemBase {
     private DigitalChannel beamBreak;
     private Telemetry telemetry;
     private boolean isIntaking = false;
+    private Debouncer debouncer;
+    private JamChecker jamChecker;
 
     public Intake(HardwareMap hMap, Telemetry telemetry) {
         intakeRoller = hMap.get(DcMotorEx.class, "intakeRoller");
         intakeRoller.setDirection(DcMotorSimple.Direction.REVERSE);
         beamBreak = hMap.digitalChannel.get("beamBreak");
         this.telemetry = telemetry;
+        debouncer = new Debouncer(500, true);
+        jamChecker = new JamChecker(intakeRoller, 3);
     }
 
     public CommandBase stop() {
@@ -45,6 +49,9 @@ public class Intake extends SubsystemBase {
             isIntaking = false; }, this);
     }
 
+    public boolean checkJam(){
+        return debouncer.update(jamChecker.isJammed());
+    }
     public boolean isBeamBroken() {
         return beamBreak.getState();
     }

@@ -34,25 +34,27 @@ public class TopRedAuto extends TopBlueAuto {
     }
     @Override
     protected Pose getStartingPose() {
-        return new Pose(makeXRed(23.233), 128.991, Math.toRadians(makeAngRed(-37)));
+        return new Pose(115.109402086, 135.240909836, Math.toRadians(225));
     }
 
     @Override
     protected void buildPaths(Drivetrain drivetrain) {
         /* build paths here */
+        int shootAng = 132;
+        int pickUpAng = 180;
 
         scanObelisk = drivetrain.getPathBuilder()
                 .addPath(
-                        new BezierLine(new Pose( makeXRed(23.233), 128.991), new Pose(makeXRed(55.631), 92.203))
+                        new BezierLine(new Pose( makeXRed(25.733), 123.2), new Pose(makeXRed(57.7), 94.1))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(-37)), Math.toRadians(makeAngRed(70)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(315)), Math.toRadians(makeAngRed(50.145)))
                 .build();
 
         scorePreload = drivetrain.getPathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(makeXRed(55.631), 92.203), new Pose(makeXRed(59), 94.619))
+                        new BezierLine(new Pose(makeXRed(57.7), 94.1), new Pose(makeXRed(62.5), 86.6))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(70)), Math.toRadians(makeAngRed(133)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(50.145)), Math.toRadians(makeAngRed(shootAng)))
                 .build();
 //                .addPath(
 //                        new BezierLine(new Pose(56.12084592145015, 135.51661631419938), new Pose(58.949, 82.224))
@@ -60,57 +62,56 @@ public class TopRedAuto extends TopBlueAuto {
 //                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(90))
 //                .build();
 
-        int angdeg = 183;
         goToFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(59), 94.619), new Pose(makeXRed(51), 85)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(133)), Math.toRadians(makeAngRed(angdeg)))
+                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(48), 83.86)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(133)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
         pickUpFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(51), 89), new Pose(makeXRed(27), 85)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(angdeg)), Math.toRadians(makeAngRed(angdeg)))
+                .addPath(new BezierLine(new Pose(makeXRed(48), 83.86), new Pose(makeXRed(19), 83.86)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
         scoreFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(22), 83), new Pose(makeXRed(57), 94.619)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(angdeg)), Math.toRadians(makeAngRed(133)))
+                .addPath(new BezierLine(new Pose(makeXRed(19), 83.86), new Pose(makeXRed(62.5), 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(shootAng+6)))
                 .build();
 
         goToSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(57), 94.619), new Pose(makeXRed(58.242), 61)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(133)), (Math.toRadians(makeAngRed(angdeg))))
+                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(45.8), 60)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+6)), (Math.toRadians(makeAngRed(pickUpAng))))
                 .setBrakingStrength(0.5)
                 .setBrakingStart(2)
                 .build();
 
         pickUpSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(58.242), 61), new Pose(makeXRed(28), 61)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(angdeg)), Math.toRadians(makeAngRed(angdeg)))
+                .addPath(new BezierLine(new Pose(makeXRed(45.8), 60), new Pose(makeXRed(19), 60)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
         scoreSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(28), 61), new Pose(makeXRed(57), 94.619)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(angdeg)), Math.toRadians(makeAngRed(145)))
+                .addPath(new BezierLine(new Pose(makeXRed(19), 60), new Pose(makeXRed(62.5), 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(shootAng+6)))
                 .build();
 
         goToThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(57), 94.619), new Pose(makeXRed(58), 37)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(145)), Math.toRadians(makeAngRed(angdeg)))
+                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(45.8), 37)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+6)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
         pickUpThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(58), 37), new Pose(makeXRed(28), 37)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(angdeg)), Math.toRadians(makeAngRed(angdeg)))
+                .addPath(new BezierLine(new Pose(makeXRed(45.8), 37), new Pose(makeXRed(22), 37)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
         scoreThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(28), 37), new Pose(makeXRed(57), 94.619)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(177)), Math.toRadians(makeAngRed(145)))
+                .addPath(new BezierLine(new Pose(makeXRed(22), 37), new Pose(makeXRed(62.5), 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(177)), Math.toRadians(makeAngRed(shootAng+3)))
                 .build();
 
         leave = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(57), 94.619), new Pose(makeXRed(50), 54)))
-                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(145)), Math.toRadians(makeAngRed(angdeg)))
+                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(50), 54)))
+                .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+3)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
     }
 

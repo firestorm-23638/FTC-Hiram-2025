@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.Config;
 
 /*
@@ -29,6 +30,10 @@ public class Indexer extends SubsystemBase {
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
         this.telemetry = telemetry;
+    }
+
+    public boolean checkJam(){
+        return motor.checkJam();
     }
 
     public void rotateToNearestIndex() {
@@ -255,6 +260,8 @@ public class Indexer extends SubsystemBase {
         }
     }
 
+
+
     public enum SlotState {EMPTY, GREEN, PURPLE}
 
     public static class IntakeIndex {
@@ -283,6 +290,8 @@ public class Indexer extends SubsystemBase {
         private long lastTime = 0;
         private double lastError = 0;
         private double errors = 0;
+        private JamChecker jamChecker;
+        private Debouncer debouncer;
         /*
         float err = encoderResolution120 - motor.getCurrentPosition();
         float power = kP * err;
@@ -295,6 +304,8 @@ public class Indexer extends SubsystemBase {
         public SpindexerMotor(HardwareMap hw) {
             motor = hw.get(DcMotorEx.class, "spindexerMotor");
             lastTime = System.nanoTime();
+            jamChecker = new JamChecker(motor, 3, 0.1f);;
+            debouncer = new Debouncer(500, true);
         }
 
         // Returns true if the motor is busy
@@ -337,6 +348,9 @@ public class Indexer extends SubsystemBase {
                 targetTick = (int) (targetTick - encoderResolution120);
             }
         }
+
+
+
         /**
          * Rotates the motor 60 degrees clockwise or counter-clockwise
          * @param clockwise Turn direction
@@ -363,6 +377,11 @@ public class Indexer extends SubsystemBase {
             currentTick = 0;
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+
+        public boolean checkJam(){
+            return debouncer.update(jamChecker.isJammed());
         }
 
         /**

@@ -14,7 +14,7 @@ public class ShooterCommandFactory {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(500)),
-                        shooter.shootBall(2900).raceWith(shooter.waitUntilFast(2900))
+                        shooter.shootBall(3100).raceWith(shooter.waitUntilFast(3100))
                 ),
                 kicker.pushBall(),
                 kicker.retract(),
@@ -40,7 +40,7 @@ public class ShooterCommandFactory {
         return new SequentialCommandGroup(
                 kicker.retract(),
                 indexer.rotateToNearestIndexCmd(),
-                shooter.stopShoot()
+                shooter.shootBall(1000)
         );
     }
 }
