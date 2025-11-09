@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -19,16 +20,17 @@ public class Shooter extends SubsystemBase {
     private final Telemetry telemetry;
 
     public static final double LOAD_CURRENT = 3;
-    private static final double MAX_SPEED = 4670;
+    private static final double MAX_SPEED = 4950;
     private boolean willReachTargetSpeed = false;
-    private static final double ACCEPTABLE_RPM_ERROR = 150;
+    private static final double ACCEPTABLE_RPM_ERROR = 80;
     private double targetRPM = 0;
     private double currentRPM = 0;
     private double lastRPM = 0;
 
     private long lastTime = 0;
-
+    private VoltageSensor voltageSensor;
     public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
         leftFlywheelMotor = hardwareMap.get(DcMotorEx.class, "leftShooter");
         rightFlywheelMotor = hardwareMap.get(DcMotorEx.class, "rightShooter");
         this.telemetry = telemetry;
@@ -37,10 +39,10 @@ public class Shooter extends SubsystemBase {
 
     private double calculateShooterPower() {
         double speedError = this.targetRPM - getSpeed();
-        if (targetRPM == 0 || targetRPM == 1000) {
+        if (targetRPM == 0) {
             speedError = 0;
         }
-        return (this.targetRPM / MAX_SPEED) + (speedError * 0.0001);
+        return ((this.targetRPM / MAX_SPEED) + (speedError * 0.00014)) * (12/voltageSensor.getVoltage());// ;
     }
 
     @Override
@@ -111,7 +113,7 @@ public class Shooter extends SubsystemBase {
 
     // check that the current speed is close to the target speed
     public boolean checkSpeed() {
-        return (this.targetRPM - this.currentRPM) <= ACCEPTABLE_RPM_ERROR;
+        return Math.abs(this.currentRPM - this.targetRPM) <= ACCEPTABLE_RPM_ERROR;
     }
 
 }
