@@ -3,16 +3,17 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Config;
+import org.firstinspires.ftc.teamcode.util.Debouncer;
+import org.firstinspires.ftc.teamcode.util.JamChecker;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 /*
     TODO: Fix issue where spamming bumpers makes current tick offset
@@ -25,15 +26,15 @@ public class Indexer extends SubsystemBase {
     private int intakeIndex = 0;
     private static int sixtyDegreeRevolutions = 0;
     private final IntakeIndex[] slots = {new IntakeIndex(), new IntakeIndex(), new IntakeIndex()};
-    private static final int EPS = 25;
-    private final Telemetry telemetry;
+    private static final int EPS = 30;
+    private Telemetry telemetry;
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
         this.telemetry = telemetry;
     }
 
-    public SpindexerMotor getMotor() {
-        return this.motor;
+    public boolean checkJam(){
+        return motor.checkJam();
     }
 
     public void rotateToNearestIndex() {
@@ -44,18 +45,18 @@ public class Indexer extends SubsystemBase {
         float ticksAtOne = ticksAtZero + SpindexerMotor.encoderResolution120;
         float ticksAtTwo = ticksAtOne + SpindexerMotor.encoderResolution120;
 
-        double current = motor.getCurrentTick();
-        double closestTick = ticksAtZero;
-        double closestDist = Math.abs(current - ticksAtZero);
+        int current = motor.getCurrentTick();
+        float closestTick = ticksAtZero;
+        float closestDist = Math.abs(current - ticksAtZero);
 
-        double d1 = Math.abs(current - ticksAtOne);
+        float d1 = Math.abs(current - ticksAtOne);
         if (d1 < closestDist) {
             closestDist = d1;
             closestTick = ticksAtOne;
             closestIndex = 1;
         }
 
-        double d2 = Math.abs(current - ticksAtTwo);
+        float d2 = Math.abs(current - ticksAtTwo);
         if (d2 < closestDist) {
             closestDist = d2;
             closestTick = ticksAtTwo;
@@ -63,7 +64,7 @@ public class Indexer extends SubsystemBase {
         }
 
         intakeIndex = closestIndex;
-        motor.rotateToTick(closestTick);
+        motor.rotateToTick((int)closestTick);
     }
 
     public void rotateToNearestSlot() {
@@ -82,7 +83,7 @@ public class Indexer extends SubsystemBase {
         return slots[intakeIndex].getState();
     }
 
-    public double getTarget() {
+    public int getTarget() {
         return motor.getTargetTick();
     }
 
@@ -149,11 +150,11 @@ public class Indexer extends SubsystemBase {
     }
 
     public CommandBase rotateRightCmd(){
-        return new InstantCommand(() -> motor.setTargetPosition((int) motor.targetTick + 100));
+        return new InstantCommand(() -> motor.setTargetPosition(motor.targetTick + 100));
     }
 
     public CommandBase rotateLeftCmd(){
-        return new InstantCommand(() -> motor.setTargetPosition((int) motor.targetTick - 100));
+        return new InstantCommand(() -> motor.setTargetPosition(motor.targetTick - 100));
     }
 
     public CommandBase setSlotColor(String colors) {
@@ -260,6 +261,8 @@ public class Indexer extends SubsystemBase {
         }
     }
 
+
+
     public enum SlotState {EMPTY, GREEN, PURPLE}
 
     public static class IntakeIndex {
@@ -275,19 +278,21 @@ public class Indexer extends SubsystemBase {
     }
 
     public static class SpindexerMotor {
-        private double currentTick;
-        private double targetTick;
+        private int currentTick;
+        private int targetTick;
         private final DcMotorEx motor;
         public final static float encoderResolution = 4096f;
         public final static float encoderResolution120 = encoderResolution / 3;
         public final static float encoderResolution60 = encoderResolution120 / 2;
         public final static float encoderResolution240 = encoderResolution120 * 2;
-        public final static double kP = 0.0005960185250345786;
-        public final static double kD = 0.0000123458;
+        public final static double kP = 0.0005;
+        public final static double kD = 0.0000143458;
 
         private long lastTime = 0;
         private double lastError = 0;
         private double errors = 0;
+        private JamChecker jamChecker;
+        private Debouncer debouncer;
         /*
         float err = encoderResolution120 - motor.getCurrentPosition();
         float power = kP * err;
@@ -300,9 +305,9 @@ public class Indexer extends SubsystemBase {
         public SpindexerMotor(HardwareMap hw) {
             motor = hw.get(DcMotorEx.class, "spindexerMotor");
             lastTime = System.nanoTime();
+            jamChecker = new JamChecker(motor, 3, 0.1f);;
+            debouncer = new Debouncer(500, true);
         }
-
-        public DcMotorEx getMotor() { return this.motor; }
 
         // Returns true if the motor is busy
         public boolean isBusy() {
@@ -327,7 +332,7 @@ public class Indexer extends SubsystemBase {
             errors = 0;
         }
 
-        public void setTargetPosition(double targetTick){
+        public void setTargetPosition(int targetTick){
             this.targetTick = targetTick;
         }
         /**
@@ -339,11 +344,14 @@ public class Indexer extends SubsystemBase {
                 throw new RuntimeException("Motor is busy");
             }
             if (clockwise) {
-                targetTick = targetTick + encoderResolution120;
+                targetTick = (int) (targetTick + encoderResolution120);
             } else {
-                targetTick = targetTick - encoderResolution120;
+                targetTick = (int) (targetTick - encoderResolution120);
             }
         }
+
+
+
         /**
          * Rotates the motor 60 degrees clockwise or counter-clockwise
          * @param clockwise Turn direction
@@ -352,21 +360,29 @@ public class Indexer extends SubsystemBase {
             if (motor.isBusy()) {
                 return;
             }
+            int rev = (int) (currentTick / encoderResolution);
+            float rotStart = currentTick + (encoderResolution * rev);
             if (clockwise) {
-                targetTick = targetTick + encoderResolution60;
+                targetTick = (int) (targetTick + encoderResolution60);
             } else {
-                targetTick = targetTick - encoderResolution60;
+                targetTick = (int) (targetTick - encoderResolution60);
             }
         }
 
-        public void rotateToTick(double tick) {
+        public void rotateToTick(int tick) {
             targetTick = tick;
         }
+
         public void reset(){
             targetTick = 0;
             currentTick = 0;
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+
+        public boolean checkJam(){
+            return debouncer.update(jamChecker.isJammed());
         }
 
         /**
@@ -377,10 +393,10 @@ public class Indexer extends SubsystemBase {
             return (int) (-motor.getCurrentPosition() / encoderResolution);
         }
 
-        public double getCurrentTick(){
+        public int getCurrentTick(){
             return this.currentTick;
         }
-        public double getTargetTick(){
+        public int getTargetTick(){
             return  this.targetTick;
         }
 

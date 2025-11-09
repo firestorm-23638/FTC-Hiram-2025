@@ -58,107 +58,27 @@ public class TopBlueAuto extends CommandOpMode {
     }
 
     protected Pose getStartingPose() {
-        return new Pose(23.233, 128.991, Math.toRadians(-37));
+        return new Pose(25.733, 123.2, Math.toRadians(315));
     }
 
 
     protected void buildPaths(Drivetrain drivetrain) {
 
-//        scanObelisk = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(51.118, 135.517), new Pose(48.278, 97.945))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(-37), Math.toRadians(70))
-//                .build();
-//        scanObelisk = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(48.278, 97.945), new Pose(58.949, 82.224))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(70), Math.toRadians(135))
-//                .build();
-//
-//        scorePreload = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(58.949, 82.224), new Pose(40.242, 84.181))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-//                .build();
-//
-//        goToFirst = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(40.242, 84.181), new Pose(12.616, 83.964))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-//                .build();
-//
-//        pickUpFirst = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(12.616, 83.964), new Pose(58.731, 82.441))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-//                .build();
-//
-//        scoreFirst = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(58.731, 82.441), new Pose(43.505, 60.254))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-//                .build();
-//
-//        goToSecond = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(43.505, 60.254), new Pose(20.882, 60.036))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-//                .build();
-//
-//        pickUpSecond = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(20.882, 60.036), new Pose(58.731, 82.441))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-//                .build();
-//
-//        scoreSecond = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(58.731, 82.441), new Pose(43.287, 35.674))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-//                .build();
-//
-//        goToThird = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(43.287, 35.674), new Pose(17.837, 35.891))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-//                .build();
-//
-//        pickUpThird = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(17.837, 35.891), new Pose(58.514, 83.094))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
-//                .build();
-//
-//        leave = drivetrain.getPathBuilder()
-//                .addPath(
-//                        new BezierLine(new Pose(58.514, 83.094), new Pose(31.758, 83.311))
-//                )
-//                .setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
-//                .build();
-//    }
+        int pickUpAng = 180;
+        int shootAng = 132;
+
         scanObelisk = drivetrain.getPathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(23.233, 128.991), new Pose(55.631, 92.203))
+                        new BezierLine(new Pose(25.733, 123.2), new Pose(57.7, 94.1))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(-37), Math.toRadians(70))
+                .setLinearHeadingInterpolation(Math.toRadians(315), Math.toRadians(50.145))
                 .build();
 
         scorePreload = drivetrain.getPathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(55.631, 92.203), new Pose(63.471, 94.619))
+                        new BezierLine(new Pose(57.7, 94.1), new Pose(60.5, 86.6))
                 )
-                .setLinearHeadingInterpolation(Math.toRadians(70), Math.toRadians(145))
+                .setLinearHeadingInterpolation(Math.toRadians(50.145), Math.toRadians(shootAng))
                 .build();
 //                .addPath(
 //                        new BezierLine(new Pose(56.12084592145015, 135.51661631419938), new Pose(58.949, 82.224))
@@ -166,57 +86,59 @@ public class TopBlueAuto extends CommandOpMode {
 //                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(90))
 //                .build();
 
-        int angdeg = 183;
+
+
+
         goToFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(63.471, 94.619), new Pose(54, 92)))
-                .setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(48, 83.86)))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng), Math.toRadians(pickUpAng))
                 .build();
 
         pickUpFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(54, 92), new Pose(27, 92)))
-                .setLinearHeadingInterpolation(Math.toRadians(angdeg), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(48, 83.86), new Pose(19, 83.86)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
         scoreFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(27, 92), new Pose(63.471, 94.619)))
-                .setLinearHeadingInterpolation(Math.toRadians(angdeg), Math.toRadians(145))
+                .addPath(new BezierLine(new Pose(19, 83.86), new Pose(60.5, 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+6))
                 .build();
 
         goToSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(63.471, 94.619), new Pose(58.242, 67)))
-                .setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(45.8, 60)))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+6), Math.toRadians(pickUpAng))
                 .setBrakingStrength(0.5)
                 .setBrakingStart(2)
                 .build();
 
         pickUpSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(58.242, 67), new Pose(30, 67)))
-                .setLinearHeadingInterpolation(Math.toRadians(angdeg), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(45.8, 60), new Pose(19, 60)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
         scoreSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(30, 67), new Pose(63.471, 94.619)))
-                .setLinearHeadingInterpolation(Math.toRadians(angdeg), Math.toRadians(145))
+                .addPath(new BezierLine(new Pose(19, 60), new Pose(60.5, 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+6))
                 .build();
 
         goToThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(63.471, 94.619), new Pose(58, 43)))
-                .setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(45.8, 37)))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+6), Math.toRadians(pickUpAng))
                 .build();
 
         pickUpThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(58, 43), new Pose(30, 43)))
-                .setLinearHeadingInterpolation(Math.toRadians(angdeg), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(45.8, 37), new Pose(22, 37)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(pickUpAng))
                 .build();
 
         scoreThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(30, 43), new Pose(63.471, 94.619)))
-                .setLinearHeadingInterpolation(Math.toRadians(177), Math.toRadians(145))
+                .addPath(new BezierLine(new Pose(22, 37), new Pose(60.5, 86.6)))
+                .setLinearHeadingInterpolation(Math.toRadians(pickUpAng), Math.toRadians(shootAng+3))
                 .build();
 
         leave = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(63.471, 94.619), new Pose(50, 54)))
-                .setLinearHeadingInterpolation(Math.toRadians(145), Math.toRadians(angdeg))
+                .addPath(new BezierLine(new Pose(60.5, 86.6), new Pose(50, 54)))
+                .setLinearHeadingInterpolation(Math.toRadians(shootAng+3), Math.toRadians(pickUpAng))
                 .build();
     }
 
@@ -224,7 +146,7 @@ public class TopBlueAuto extends CommandOpMode {
     @Override
     public void initialize() {
         this.indexer = new Indexer(hardwareMap, telemetry);
-        this.drivetrain = new Drivetrain(hardwareMap, getStartingPose());
+        this.drivetrain = Drivetrain.getInstance(hardwareMap, getStartingPose());
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
@@ -238,7 +160,7 @@ public class TopBlueAuto extends CommandOpMode {
             telemetry.addData("driveX:", drivetrain.getPosition().getX());
             telemetry.addData("driveY:", drivetrain.getPosition().getY());
         })) ;
-        int targetSpeed = 2900;
+        int targetSpeed = 3100;
 
         new Trigger(intake::isBeamBroken).and(new Trigger(intake::isIntaking))
                 .whenActive(indexer.rotate120Cmd(false));
@@ -272,7 +194,7 @@ public class TopBlueAuto extends CommandOpMode {
                 //picking up first batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpFirst, 0.35)
+                        new SlowFollowPath(drivetrain, pickUpFirst, 0.3)
                 ),
                 indexer.setSlotColor("GPP"),
 
@@ -303,7 +225,7 @@ public class TopBlueAuto extends CommandOpMode {
                 //picking up second batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpSecond, 0.3)
+                        new SlowFollowPath(drivetrain, pickUpSecond, 0.27)
                 ),
                 indexer.setSlotColor("PGP"),
 

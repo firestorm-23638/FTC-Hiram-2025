@@ -9,17 +9,26 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.util.Config;
+import org.firstinspires.ftc.teamcode.util.Position;
 
 //TODO: Snap to angle function
 public class Drivetrain extends SubsystemBase {
     private final Follower follower;
     private Position position;
     private static final double kp = 0.035;
+    private static Drivetrain drivetrain;
+
+    public static Drivetrain getInstance(HardwareMap hardwareMap, Pose pose) {
+        if (drivetrain == null) {
+            drivetrain = new Drivetrain(hardwareMap, pose);
+        }
+
+        return drivetrain;
+    }
 
     public Drivetrain(HardwareMap hw, Pose pose) {
         follower = Constants.createFollower(hw);
@@ -35,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateTeleOpDrive(double x, double y, double rx) {
-        follower.setTeleOpDrive(y,x,rx, true);
+        follower.setTeleOpDrive(y,x,rx, false);
     }
     public void startTeleOpDrive(){
         follower.startTeleopDrive();

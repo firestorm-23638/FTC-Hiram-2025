@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import org.firstinspires.ftc.teamcode.util.LaunchParams;
+import org.firstinspires.ftc.teamcode.util.Position;
+import org.firstinspires.ftc.teamcode.util.Vect2;
+import org.firstinspires.ftc.teamcode.util.Vect3;
+
 // index is radius; start at index+1
 public class Aimer {
     private final Vect3 blueGoalPosition = new Vect3(13, 136.5, 39.75); // goal is 38.75 inches tall (not including top section)
@@ -7,10 +12,12 @@ public class Aimer {
     // every 6 inches
     private final double[] rpmMap = {1, 2, 3};
     private final boolean isBlue;
+    private final Vect2 goalPos;
     private final Drivetrain drivetrain;
     public Aimer(Drivetrain drivetrain, boolean isBlue) {
         this.isBlue = isBlue;
         this.drivetrain = drivetrain;
+        this.goalPos = this.isBlue ? this.blueGoalPosition.getVect2() : this.redGoalPosition.getVect2();
     }
 
     /**
@@ -19,12 +26,15 @@ public class Aimer {
      * @return LaunchParams (RPM, rotation angle in radians)
      */
     public LaunchParams aim() {
-        Vect2 goalPos = this.isBlue ? this.blueGoalPosition.getVect2() : this.redGoalPosition.getVect2();
         Vect2 robotVect2 = drivetrain.getPosition().getVect2();
         double radius = Vect2.getDistance(goalPos, robotVect2);
         long index = Math.round(radius / 6) - 1;
         double rpm = rpmMap[(int) index];
         return new LaunchParams(rpm, this.getYaw());
+    }
+
+    public double getDistance(Vect2 robotPosition) {
+        return Vect2.getDistance(robotPosition, goalPos);
     }
 
     /**

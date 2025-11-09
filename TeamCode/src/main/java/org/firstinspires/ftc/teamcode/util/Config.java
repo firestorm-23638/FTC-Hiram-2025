@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import org.firstinspires.ftc.teamcode.subsystems.Patterns;
-
 public class Config {
     public static Patterns CURRENT_PATTERN = null;
 

@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class BallClassifier {
     private final AnalogInput[] inputs = new AnalogInput[4];
