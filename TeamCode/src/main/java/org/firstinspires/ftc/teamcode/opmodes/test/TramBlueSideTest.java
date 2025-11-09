@@ -25,9 +25,6 @@ public class TramBlueSideTest extends CommandOpMode {
     }
     private Shooter shooter;
     private double currentRPM;
-    private GamepadEx driver;
-    private Indexer indexer;
-    private Kicker kicker;
     private Aimer aimer;
 
     @Override
@@ -35,9 +32,6 @@ public class TramBlueSideTest extends CommandOpMode {
         this.drivetrain = new Drivetrain(hardwareMap, getStartingPose());
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.currentRPM = 3100;
-        this.driver = new GamepadEx(gamepad1);
-        this.indexer = new Indexer(hardwareMap, telemetry);
-        this.kicker = new Kicker(hardwareMap, telemetry);
         this.aimer = new Aimer(drivetrain, true);
         register(drivetrain, shooter);
 
@@ -45,7 +39,7 @@ public class TramBlueSideTest extends CommandOpMode {
         AtomicBoolean lastDpadUp = new AtomicBoolean(false);
 
         schedule(new RunCommand(()->{
-            shooter.setRPM(currentRPM);
+//            shooter.setRPM(currentRPM);
             if (!lastDpadUp.get() && gamepad1.dpad_up){
                 currentRPM += 50;
             }else if (!lastDpadDown.get() && gamepad1.dpad_down){
@@ -54,8 +48,15 @@ public class TramBlueSideTest extends CommandOpMode {
             lastDpadUp.set(gamepad1.dpad_up);
             lastDpadDown.set(gamepad1.dpad_down);
 
-            this.driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                    .whenPressed(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker));
+            // update rpm
+            if (gamepad1.dpad_right){
+                shooter.setRPM(currentRPM);
+            }
+
+            // kill motor
+            if (gamepad1.dpad_left){
+                shooter.setRPM(0);
+            }
 
             telemetry.addData("x", drivetrain.getPosition().getX());
             telemetry.addData("y", drivetrain.getPosition().getY());
