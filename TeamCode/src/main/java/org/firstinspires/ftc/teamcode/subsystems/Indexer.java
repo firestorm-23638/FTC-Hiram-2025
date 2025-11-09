@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -29,6 +30,10 @@ public class Indexer extends SubsystemBase {
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
         this.telemetry = telemetry;
+    }
+
+    public SpindexerMotor getMotor() {
+        return this.motor;
     }
 
     public void rotateToNearestIndex() {
@@ -297,6 +302,8 @@ public class Indexer extends SubsystemBase {
             lastTime = System.nanoTime();
         }
 
+        public DcMotorEx getMotor() { return this.motor; }
+
         // Returns true if the motor is busy
         public boolean isBusy() {
             return motor.isBusy();
@@ -355,7 +362,6 @@ public class Indexer extends SubsystemBase {
         public void rotateToTick(double tick) {
             targetTick = tick;
         }
-
         public void reset(){
             targetTick = 0;
             currentTick = 0;
