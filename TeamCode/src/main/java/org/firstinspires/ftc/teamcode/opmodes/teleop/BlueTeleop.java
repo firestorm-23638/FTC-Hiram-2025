@@ -86,6 +86,7 @@ public class BlueTeleop extends CommandOpMode {
         new Trigger(intake :: checkJam).whenActive(
                 new SequentialCommandGroup(
                     intake.ejectBall(),
+                    indexer.rotate120Cmd(true),
                     new WaitCommand(300),
                     intake.intakeBall()
 
