@@ -95,8 +95,7 @@ public class BlueTeleop extends CommandOpMode {
 
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker))
-                        .alongWith(new TurnToGoal(drivetrain, limelight, ()-> driver.getLeftX(), ()-> driver.getLeftY())))
+                .whenPressed(new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)))
                 .whenReleased(ShooterCommandFactory.resetShooter(indexer, shooter, kicker));
 
         new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) >= 0.5)

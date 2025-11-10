@@ -142,6 +142,9 @@ public class TopBlueAuto extends CommandOpMode {
                 .build();
     }
 
+    public double getTargetSpeed(){
+        return 2900;
+    }
 
     @Override
     public void initialize() {
@@ -160,7 +163,7 @@ public class TopBlueAuto extends CommandOpMode {
             telemetry.addData("driveX:", drivetrain.getPosition().getX());
             telemetry.addData("driveY:", drivetrain.getPosition().getY());
         })) ;
-        int targetSpeed = 3100;
+        int targetSpeed = 3000;
 
         new Trigger(intake::isBeamBroken).and(new Trigger(intake::isIntaking))
                 .whenActive(indexer.rotate120Cmd(false));
@@ -181,7 +184,7 @@ public class TopBlueAuto extends CommandOpMode {
                 intake.ejectBall(),
                 new FollowPathCommand(drivetrain, scorePreload),
                 indexer.nearTarget(),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, getTargetSpeed())),
 
 
                 //going to first batch
@@ -212,7 +215,7 @@ public class TopBlueAuto extends CommandOpMode {
 
                 new ParallelCommandGroup(
                 intake.stop(),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker))
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, getTargetSpeed()))
 
                 ),
 
@@ -244,7 +247,7 @@ public class TopBlueAuto extends CommandOpMode {
                         new FollowPathCommand(drivetrain, scoreSecond),
                         intake.ejectBall()
                 ),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, getTargetSpeed())),
 
 
                 //THIRD BATCH IS BELOW
@@ -257,19 +260,19 @@ public class TopBlueAuto extends CommandOpMode {
                 new ParallelCommandGroup(
                         intake.intakeBall(),
                         new SlowFollowPath(drivetrain, pickUpThird, 0.3)
-                ),
+                )
 
                 //going to score third batch
-                new ParallelCommandGroup(
-                        ShooterCommandFactory.revUpForAuto(indexer, shooter, kicker),
+//                new ParallelCommandGroup(
+//                        ShooterCommandFactory.revUpForAuto(indexer, shooter, kicker),
 //                        shooter.rampUp(targetSpeed),
-                        new FollowPathCommand(drivetrain, scoreThird)
-                ),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+//                        new FollowPathCommand(drivetrain, scoreThird)
+//                ),
+//                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, getTargetSpeed())),
 
 
                 //LEAVING BELOW
-                new FollowPathCommand(drivetrain, leave)
+//                new FollowPathCommand(drivetrain, leave)
         );
 
         schedule(auto);

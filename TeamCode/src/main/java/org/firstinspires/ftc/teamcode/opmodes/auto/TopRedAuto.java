@@ -37,22 +37,28 @@ public class TopRedAuto extends TopBlueAuto {
         return new Pose(115.109402086, 135.240909836, Math.toRadians(225));
     }
 
+    public double getTargetSpeed(){
+        return 2950;
+    }
+
     @Override
     protected void buildPaths(Drivetrain drivetrain) {
         /* build paths here */
         int shootAng = 132;
         int pickUpAng = 180;
+        double shootX = 92;
+        double shootY = 94.;
 
         scanObelisk = drivetrain.getPathBuilder()
                 .addPath(
-                        new BezierLine(new Pose( makeXRed(25.733), 123.2), new Pose(makeXRed(57.7), 94.1))
+                        new BezierLine(new Pose( makeXRed(25.733), 123.2), new Pose(96.58, 114))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(315)), Math.toRadians(makeAngRed(50.145)))
                 .build();
 
         scorePreload = drivetrain.getPathBuilder()
                 .addPath(
-                        new BezierLine(new Pose(makeXRed(57.7), 94.1), new Pose(makeXRed(62.5), 86.6))
+                        new BezierLine(new Pose(96.58, 114), new Pose(shootX, shootY))
                 )
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(50.145)), Math.toRadians(makeAngRed(shootAng)))
                 .build();
@@ -63,7 +69,7 @@ public class TopRedAuto extends TopBlueAuto {
 //                .build();
 
         goToFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(48), 83.86)))
+                .addPath(new BezierLine(new Pose(shootX, shootY), new Pose(makeXRed(48), 83.86)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(133)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
@@ -73,12 +79,12 @@ public class TopRedAuto extends TopBlueAuto {
                 .build();
 
         scoreFirst = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(19), 83.86), new Pose(makeXRed(62.5), 86.6)))
+                .addPath(new BezierLine(new Pose(makeXRed(19), 83.86), new Pose(shootX, shootY)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(shootAng+6)))
                 .build();
 
         goToSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(45.8), 60)))
+                .addPath(new BezierLine(new Pose(shootX, shootY), new Pose(makeXRed(45.8), 60)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+6)), (Math.toRadians(makeAngRed(pickUpAng))))
                 .setBrakingStrength(0.5)
                 .setBrakingStart(2)
@@ -90,17 +96,17 @@ public class TopRedAuto extends TopBlueAuto {
                 .build();
 
         scoreSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(19), 60), new Pose(makeXRed(62.5), 86.6)))
+                .addPath(new BezierLine(new Pose(makeXRed(19), 60), new Pose(shootX, shootY)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(shootAng+6)))
                 .build();
 
         goToThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(62.5), 86.6), new Pose(makeXRed(45.8), 37)))
+                .addPath(new BezierLine(new Pose(shootX, shootY), new Pose(makeXRed(45.8), 37)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(shootAng+6)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
         pickUpThird = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(45.8), 37), new Pose(makeXRed(22), 37)))
+                .addPath(new BezierLine(new Pose(makeXRed(45.8), 37), new Pose(makeXRed(12), 37)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
@@ -190,7 +196,7 @@ public class TopRedAuto extends TopBlueAuto {
                 //picking up second batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpSecond, 0.3)
+                        new SlowFollowPath(drivetrain, pickUpSecond, 0.32)
                 ),
                 indexer.setSlotColor("PGP"),
 
@@ -210,8 +216,8 @@ public class TopRedAuto extends TopBlueAuto {
                 //picking up third batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpThird, 0.4)
-                ),
+                        new SlowFollowPath(drivetrain, pickUpThird, 0.28)
+                )
 
                 //going to score third batch
 //                new ParallelCommandGroup(
@@ -222,7 +228,7 @@ public class TopRedAuto extends TopBlueAuto {
 
 
                 //LEAVING BELOW
-                new FollowPathCommand(drivetrain, leave)
+
         );
 
         schedule(auto);
