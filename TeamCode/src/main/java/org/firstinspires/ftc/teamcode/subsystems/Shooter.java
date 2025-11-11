@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
+
 
 public class Shooter extends SubsystemBase {
 
@@ -35,6 +37,7 @@ public class Shooter extends SubsystemBase {
         rightFlywheelMotor = hardwareMap.get(DcMotorEx.class, "rightShooter");
         this.telemetry = telemetry;
         lastTime = System.nanoTime();
+
     }
 
     private double calculateShooterPower() {
@@ -42,7 +45,7 @@ public class Shooter extends SubsystemBase {
         if (targetRPM == 0 || targetRPM == 1000) {
             speedError = 0;
         }
-        return ((this.targetRPM / MAX_SPEED) + (speedError * 0.00035)) * (12/voltageSensor.getVoltage());// ;
+        return ((this.targetRPM / MAX_SPEED) + (speedError * 0.0005)) * (12/voltageSensor.getVoltage());// ;
     }
 
     @Override
@@ -68,6 +71,8 @@ public class Shooter extends SubsystemBase {
         if (currentRPM + (.2 * ROC) + ACCEPTABLE_RPM_ERROR > targetRPM) {
             willReachTargetSpeed = true;
         }
+
+
 
         telemetry.addData("targetSpeed", targetRPM);
         telemetry.addData("rpm", getSpeed());

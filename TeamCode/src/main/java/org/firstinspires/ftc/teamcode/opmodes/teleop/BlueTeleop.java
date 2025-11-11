@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.teamcode.command_factory.IndexerCommandFactory;
 import org.firstinspires.ftc.teamcode.command_factory.ShooterCommandFactory;
 import org.firstinspires.ftc.teamcode.commands.ArcadeDrive;
@@ -57,7 +58,6 @@ public class BlueTeleop extends CommandOpMode {
         this.kicker = new Kicker(hardwareMap, telemetry);
         this.operator = new GamepadEx(this.gamepad2);
         this.limelight = new Limelight(hardwareMap, drivetrain);
-
         setSide();
         double dir = Config.isRedAlliance ? 1 : -1;
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
@@ -86,7 +86,7 @@ public class BlueTeleop extends CommandOpMode {
         new Trigger(intake :: checkJam).whenActive(
                 new SequentialCommandGroup(
                     intake.ejectBall(),
-                    indexer.rotate120Cmd(true),
+                    indexer.rotate120Cmd(false),
                     new WaitCommand(300),
                     intake.intakeBall()
 
