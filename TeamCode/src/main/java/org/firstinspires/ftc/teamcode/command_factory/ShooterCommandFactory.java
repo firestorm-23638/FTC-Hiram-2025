@@ -14,7 +14,7 @@ public class ShooterCommandFactory {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(500)),
-                        shooter.shootBall(3000).raceWith(shooter.waitUntilFast(3000))
+                        shooter.shootBall(2900).raceWith(shooter.waitUntilFast(2900))
                 ),
                 kicker.pushBall(),
                 kicker.retract(),
@@ -25,8 +25,8 @@ public class ShooterCommandFactory {
     public static Command shootArtifact(Indexer indexer, Shooter shooter, Kicker kicker, double targetSpeed) {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(500)),
-                        shooter.shootBall(targetSpeed).raceWith(shooter.waitUntilFast(targetSpeed))
+                        indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(250)),
+                        shooter.shootBall(targetSpeed).raceWith(shooter.waitUntilFast(targetSpeed).withTimeout(5000))
                 ),
                 kicker.pushBall(),
                 kicker.retract(),
@@ -38,8 +38,8 @@ public class ShooterCommandFactory {
     public static Command shootArtifactFar(Indexer indexer, Shooter shooter, Kicker kicker) {
         return new SequentialCommandGroup(
             new ParallelCommandGroup(
-                indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(500)),
-                shooter.shootBall(3500).raceWith(shooter.waitUntilFast(3500))
+                indexer.rotate60Cmd(true).andThen(indexer.nearTarget().withTimeout(250)),
+                shooter.shootBall(3400).raceWith(shooter.waitUntilFast(3400).withTimeout(5000))
             ),
             kicker.pushBall(),
             kicker.retract(),

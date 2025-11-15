@@ -91,7 +91,7 @@ public class TopRedAuto extends TopBlueAuto {
                 .build();
 
         pickUpSecond = drivetrain.getPathBuilder()
-                .addPath(new BezierLine(new Pose(makeXRed(45.8), 60), new Pose(makeXRed(19), 60)))
+                .addPath(new BezierLine(new Pose(makeXRed(45.8), 58), new Pose(makeXRed(19), 58)))
                 .setLinearHeadingInterpolation(Math.toRadians(makeAngRed(pickUpAng)), Math.toRadians(makeAngRed(pickUpAng)))
                 .build();
 
@@ -158,7 +158,7 @@ public class TopRedAuto extends TopBlueAuto {
                 new WaitCommand(200),
                 new FollowPathCommand(drivetrain, scorePreload),
                 indexer.nearTarget(),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, 2950)),
 
 
                 //going to first batch
@@ -181,7 +181,7 @@ public class TopRedAuto extends TopBlueAuto {
                         indexer.goToBestStartingLocationCmd(),
                         new FollowPathCommand(drivetrain, scoreFirst)
                 ),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, 2950)),
 
 
                 //2ND BATCH IS BELOW
@@ -206,7 +206,7 @@ public class TopRedAuto extends TopBlueAuto {
                         shooter.rampUp(targetSpeed),
                         new FollowPathCommand(drivetrain, scoreSecond)
                 ),
-                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker)),
+                new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, 2950)),
 
 
                 //THIRD BATCH IS BELOW

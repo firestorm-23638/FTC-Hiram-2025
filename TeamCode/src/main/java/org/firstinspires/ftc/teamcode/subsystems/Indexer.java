@@ -25,7 +25,7 @@ public class Indexer extends SubsystemBase {
     private int intakeIndex = 0;
     private static int sixtyDegreeRevolutions = 0;
     private final IntakeIndex[] slots = {new IntakeIndex(), new IntakeIndex(), new IntakeIndex()};
-    private static final int EPS = 30;
+    private static final int EPS = 40;
     private Telemetry telemetry;
     public Indexer(HardwareMap hw, Telemetry telemetry) {
         motor = new SpindexerMotor(hw);
@@ -137,8 +137,7 @@ public class Indexer extends SubsystemBase {
 
     public CommandBase nearTarget() {
         return new WaitUntilCommand(() -> motor.currentTick > motor.getTargetTick() - EPS
-            && motor.getCurrentTick() < motor.getTargetTick() + EPS
-            && motor.getVelocity() < 100);
+            && motor.getCurrentTick() < motor.getTargetTick() + EPS);
     }
 
     public CommandBase goToBestStartingLocationCmd() {

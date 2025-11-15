@@ -149,7 +149,7 @@ public class TopBlueAuto extends CommandOpMode {
     @Override
     public void initialize() {
         this.indexer = new Indexer(hardwareMap, telemetry);
-        this.drivetrain = Drivetrain.getInstance(hardwareMap, getStartingPose());
+        this.drivetrain = Drivetrain.getInstance(hardwareMap, getStartingPose(), true);
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
@@ -163,7 +163,6 @@ public class TopBlueAuto extends CommandOpMode {
             telemetry.addData("driveX:", drivetrain.getPosition().getX());
             telemetry.addData("driveY:", drivetrain.getPosition().getY());
         })) ;
-        int targetSpeed = 3000;
 
         new Trigger(intake::isBeamBroken).and(new Trigger(intake::isIntaking))
                 .whenActive(indexer.rotate120Cmd(false));
@@ -174,7 +173,7 @@ public class TopBlueAuto extends CommandOpMode {
                 indexer.setSlotColor("GPP"),
                 new ParallelCommandGroup(
                         new FollowPathCommand(drivetrain, scanObelisk),
-                        shooter.rampUp(targetSpeed),
+                        shooter.rampUp(getTargetSpeed()),
                         new WaitUntilCommand(() -> limelight.readObelisk() != null)
                                 .withTimeout(2000)
                                 .andThen(indexer.goToBestStartingLocationCmd())
@@ -183,7 +182,7 @@ public class TopBlueAuto extends CommandOpMode {
                 new WaitCommand(200),
                 intake.ejectBall(),
                 new FollowPathCommand(drivetrain, scorePreload),
-                indexer.nearTarget(),
+                new WaitCommand(200),
                 new RepeatThriceCommand(ShooterCommandFactory.shootArtifact(indexer, shooter, kicker, getTargetSpeed())),
 
 

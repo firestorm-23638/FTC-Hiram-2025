@@ -22,8 +22,8 @@ public class Drivetrain extends SubsystemBase {
     private static final double kp = 0.035;
     private static Drivetrain drivetrain;
 
-    public static Drivetrain getInstance(HardwareMap hardwareMap, Pose pose) {
-        if (drivetrain == null) {
+    public static Drivetrain getInstance(HardwareMap hardwareMap, Pose pose, boolean create) {
+        if (drivetrain == null||create  == true) {
             drivetrain = new Drivetrain(hardwareMap, pose);
         }
 

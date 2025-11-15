@@ -22,7 +22,7 @@ public class RedTeleop extends BlueTeleop {
     }
     @Override
     public Pose startPose(){
-        return new Pose(115.109402086, 135.240909836, makeAngRed(315));
+        return new Pose(115.109402086, 135.240909836, 225);
 
     }
 }

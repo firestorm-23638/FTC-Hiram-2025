@@ -59,10 +59,10 @@ public class Shooter extends SubsystemBase {
             setPower(1);
         } else {
             double power = calculateShooterPower();
-            double current = leftFlywheelMotor.getCurrent(CurrentUnit.AMPS);
-            if (current > LOAD_CURRENT) {
-                power = Math.min(MAX_SPEED, power * 1.1);
-            }
+//            double current = leftFlywheelMotor.getCurrent(CurrentUnit.AMPS);
+//            if (current > LOAD_CURRENT) {
+//                power = Math.min(MAX_SPEED, power * 1.1);
+//            }
             setPower(power);
         }
 

@@ -25,6 +25,7 @@ public class ArcadeDrive extends CommandBase {
     @Override
     public void initialize() {
         drivetrain.startTeleOpDrive();
+        drivetrain.setMax(1);
     }
 
     @Override

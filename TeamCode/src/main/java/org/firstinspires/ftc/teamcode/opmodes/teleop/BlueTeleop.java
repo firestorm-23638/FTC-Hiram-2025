@@ -52,14 +52,14 @@ public class BlueTeleop extends CommandOpMode {
     public void initialize() {
         this.driver = new GamepadEx(this.gamepad1);
         this.indexer = new Indexer(hardwareMap, telemetry);
-        this.drivetrain = Drivetrain.getInstance(hardwareMap, startPose());
+        this.drivetrain = Drivetrain.getInstance(hardwareMap, startPose(), false);
         this.shooter = new Shooter(hardwareMap, telemetry);
         this.intake = new Intake(hardwareMap, telemetry);
         this.kicker = new Kicker(hardwareMap, telemetry);
         this.operator = new GamepadEx(this.gamepad2);
         this.limelight = new Limelight(hardwareMap, drivetrain);
         setSide();
-        double dir = Config.isRedAlliance ? 1 : -1;
+        double dir = -1;
         drivetrain.setDefaultCommand(new ArcadeDrive(drivetrain,
             () -> driver.getLeftX() * dir,
             () -> driver.getLeftY() * dir,
