@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.util;
 
 public class LaunchParams {
     public final double rpm;
-    public final double yaw;
-    public LaunchParams(double rpm, double yaw) {
+    public final double yawRadians;
+    public LaunchParams(double rpm, double yawRadians) {
         this.rpm = rpm;
-        this.yaw = yaw;
+        this.yawRadians = yawRadians;
     }
 }

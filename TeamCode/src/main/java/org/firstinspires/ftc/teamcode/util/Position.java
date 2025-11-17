@@ -33,6 +33,8 @@ public class Position {
         return headingRadians;
     }
 
+    public double getHeadingDegrees() { return headingRadians * (180 / Math.PI); }
+
     public void setHeadingRadians(double headingRadians) {
         this.headingRadians = headingRadians;
     }

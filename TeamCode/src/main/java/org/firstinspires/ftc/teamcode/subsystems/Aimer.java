@@ -30,7 +30,7 @@ public class Aimer {
         double radius = Vect2.getDistance(goalPos, robotVect2);
         long index = Math.round(radius / 6) - 1;
         double rpm = rpmMap[(int) index];
-        return new LaunchParams(rpm, this.getYaw());
+        return new LaunchParams(rpm, getYaw());
     }
 
     public double getDistance(Vect2 robotPosition) {
