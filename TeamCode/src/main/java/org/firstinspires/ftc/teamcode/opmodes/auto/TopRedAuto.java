@@ -150,7 +150,7 @@ public class TopRedAuto extends TopBlueAuto {
                 new ParallelCommandGroup(
                         new FollowPathCommand(drivetrain, scanObelisk),
                         shooter.rampUp(targetSpeed),
-                        new WaitUntilCommand(() -> limelight.readObelisk() != null)
+                        new WaitUntilCommand(() -> limelight.readObelisk(0) != null)
                                 .withTimeout(2000)
                                 .andThen(indexer.goToBestStartingLocationCmd())
                 ),

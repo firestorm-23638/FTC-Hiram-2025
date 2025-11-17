@@ -63,7 +63,8 @@ public class Limelight {
 
         return botpose_mt2;
     }
-    public Patterns readObelisk() {
+    public Patterns readObelisk(int pipeline) {
+        limelight.pipelineSwitch(pipeline);
         LLResult result = limelight.getLatestResult();
 
         long staleness = result.getStaleness();

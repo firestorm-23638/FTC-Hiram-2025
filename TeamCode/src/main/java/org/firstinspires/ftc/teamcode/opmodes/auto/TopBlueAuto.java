@@ -166,7 +166,7 @@ public class TopBlueAuto extends CommandOpMode {
                 new ParallelCommandGroup(
                         new FollowPathCommand(drivetrain, scanObelisk),
                         shooter.rampUp(getTargetSpeed()),
-                        new WaitUntilCommand(() -> limelight.readObelisk() != null)
+                        new WaitUntilCommand(() -> limelight.readObelisk(0) != null)
                                 .withTimeout(2000)
                                 .andThen(indexer.goToBestStartingLocationCmd())
                 ),

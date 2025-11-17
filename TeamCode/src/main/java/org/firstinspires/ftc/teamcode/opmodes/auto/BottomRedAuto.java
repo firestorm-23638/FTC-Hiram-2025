@@ -56,7 +56,7 @@ public class BottomRedAuto extends CommandOpMode {
     protected void buildPaths(Drivetrain drivetrain) {
 
         int pickUpAng = 0;
-        int shootAng = 70;
+        double shootAng = 69;
         double shootX = 88.61;
         double shootY = 16.044;
         double goToBallX = 101.5;
@@ -129,7 +129,7 @@ public class BottomRedAuto extends CommandOpMode {
     }
 
     public double getTargetSpeed(){
-        return 3400;
+        return 3300;
     }
 
     @Override
@@ -159,7 +159,8 @@ public class BottomRedAuto extends CommandOpMode {
                 indexer.setSlotColor("GPP"),
                 new ParallelCommandGroup(
                         ShooterCommandFactory.revUpForAuto( indexer,  shooter, kicker),
-                        new WaitUntilCommand(() -> limelight.readObelisk() != null)
+                        //pipeline 0 is close and pipeline 1 is far
+                        new WaitUntilCommand(() -> limelight.readObelisk(1) != null)
                                 .withTimeout(2000)
                                 .andThen(indexer.goToBestStartingLocationCmd())
                 ),
@@ -216,7 +217,7 @@ public class BottomRedAuto extends CommandOpMode {
                 //picking up second batch
                 new ParallelCommandGroup(
                         intake.intakeBall(),
-                        new SlowFollowPath(drivetrain, pickUpSecond, 0.3)
+                        new SlowFollowPath(drivetrain, pickUpSecond, 0.35)
                 ),
 
                 new ParallelCommandGroup(

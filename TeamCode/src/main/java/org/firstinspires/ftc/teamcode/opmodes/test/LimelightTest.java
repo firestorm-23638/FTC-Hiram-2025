@@ -19,7 +19,7 @@ public class LimelightTest extends OpMode {
 
     @Override
     public void loop() {
-        Patterns patterns = limelight.readObelisk();
+        Patterns patterns = limelight.readObelisk(0);
 
         if (patterns != null)
             telemetry.addData("Motif", patterns.name());
